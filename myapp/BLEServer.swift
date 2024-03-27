@@ -22,8 +22,6 @@ class BLEPeripheral:NSObject,ObservableObject,CBPeripheralManagerDelegate{
     let descriptor1:CBMutableDescriptor
     let descriptor2:CBMutableDescriptor
     
-    
-    
 
     override init(){
         
@@ -36,14 +34,16 @@ class BLEPeripheral:NSObject,ObservableObject,CBPeripheralManagerDelegate{
         self.characteristic2.descriptors = [descriptor2]
         
         self.service = CBMutableService(type: BLEUtils.serviceID, primary: true)
-        self.service.characteristics = [characteristic1,characteristic2]
+        self.service.characteristics = [characteristic1, characteristic2]
 
         self.peripheralQueue = DispatchQueue(label: "Peripheral Queue")
         super.init()
         peripheralManager = CBPeripheralManager(delegate: self, queue: peripheralQueue)
+        print("init finished 1")
     }
     
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
+        print("BLE peripheral state: \(peripheral.state)")
         if peripheral.state == .poweredOn{
             print("Peripheral State: ON")
             isSwitchedOn = true
@@ -67,11 +67,13 @@ class BLEPeripheral:NSObject,ObservableObject,CBPeripheralManagerDelegate{
             return
         }else{
             print("Service \(service.uuid) added!")
-            let advertisingName = "BLE Connect"
-            var advertisementData:[String:Any] = [:]
-            advertisementData[CBAdvertisementDataLocalNameKey] = advertisingName
-            advertisementData[CBAdvertisementDataServiceUUIDsKey] = [self.service.uuid]
-            peripheralManager.startAdvertising(advertisementData)
+            let advertisingData: [String: Any] = [
+                CBAdvertisementDataServiceUUIDsKey: [self.service.uuid], // Include service UUID in advertising data
+                CBAdvertisementDataLocalNameKey: "YourDeviceName" // Set local name for the peripheral
+            ]
+
+            peripheralManager.startAdvertising(advertisingData)
+            print("is advertising: \(peripheralManager.isAdvertising)")
         }
     }
     func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
@@ -80,8 +82,11 @@ class BLEPeripheral:NSObject,ObservableObject,CBPeripheralManagerDelegate{
             return
         }else{
             print("Advertisement Started")
+            print("Hello this")
+            print("is advertising: \(peripheralManager.isAdvertising)")
         }
     }
+
     func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
         print("Write request recieved")
         print(requests)
@@ -97,9 +102,16 @@ class BLEPeripheral:NSObject,ObservableObject,CBPeripheralManagerDelegate{
         
     }
     func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveRead request: CBATTRequest) {
+        print("Read recieved \(request.description)")
         peripheralManager.respond(to: request, withResult: .success)
     }
     
+    func peripheralManager(_ peripheral: CBPeripheralManager, willRestoreState dict: [String : Any]) {
+    }
+    
+    func checkAdvertis(){
+        print("is advertising:: \(self.peripheralManager.isAdvertising)")
+    }
     
     
 }

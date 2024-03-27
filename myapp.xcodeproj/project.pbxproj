@@ -7,9 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0743CF362BE6B72C009D356D /* ISSoundAdditions in Frameworks */ = {isa = PBXBuildFile; productRef = 0743CF352BE6B72C009D356D /* ISSoundAdditions */; };
 		076117B52A4326D700940D9C /* bleScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076117B42A4326D700940D9C /* bleScan.swift */; };
 		076117B72A44297300940D9C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076117B62A44297300940D9C /* Constants.swift */; };
 		07674D9629C9B3DA00C0DCA6 /* bleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07674D9529C9B3DA00C0DCA6 /* bleManager.swift */; };
+		078EA1012BC296D6006414A0 /* MediaRemoteHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EA1002BC296D6006414A0 /* MediaRemoteHelper.swift */; };
+		078EA1032BC2981D006414A0 /* MediaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EA1022BC2981D006414A0 /* MediaModel.swift */; };
+		078EA1052BC2BE91006414A0 /* BLEConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EA1042BC2BE91006414A0 /* BLEConnection.swift */; };
+		07A36C6A2BDE4AEE00F63F9E /* PacketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A36C692BDE4AEE00F63F9E /* PacketManager.swift */; };
+		07ABB1A22BB2EDC2009665F5 /* TestL2cap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ABB1A12BB2EDC2009665F5 /* TestL2cap.swift */; };
 		07DF436229B1CB0F009ED75C /* myappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436129B1CB0F009ED75C /* myappApp.swift */; };
 		07DF436429B1CB0F009ED75C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436329B1CB0F009ED75C /* ContentView.swift */; };
 		07DF436629B1CB10009ED75C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DF436529B1CB10009ED75C /* Assets.xcassets */; };
@@ -40,9 +46,15 @@
 
 /* Begin PBXFileReference section */
 		07187D7429B305EB0087EA5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		075AE4902BDE827F003821FC /* myappRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myappRelease.entitlements; sourceTree = "<group>"; };
 		076117B42A4326D700940D9C /* bleScan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bleScan.swift; sourceTree = "<group>"; };
 		076117B62A44297300940D9C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		07674D9529C9B3DA00C0DCA6 /* bleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bleManager.swift; sourceTree = "<group>"; };
+		078EA1002BC296D6006414A0 /* MediaRemoteHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaRemoteHelper.swift; sourceTree = "<group>"; };
+		078EA1022BC2981D006414A0 /* MediaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaModel.swift; sourceTree = "<group>"; };
+		078EA1042BC2BE91006414A0 /* BLEConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEConnection.swift; sourceTree = "<group>"; };
+		07A36C692BDE4AEE00F63F9E /* PacketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketManager.swift; sourceTree = "<group>"; };
+		07ABB1A12BB2EDC2009665F5 /* TestL2cap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestL2cap.swift; sourceTree = "<group>"; };
 		07DF435E29B1CB0F009ED75C /* myapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = myapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DF436129B1CB0F009ED75C /* myappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappApp.swift; sourceTree = "<group>"; };
 		07DF436329B1CB0F009ED75C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -63,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0743CF362BE6B72C009D356D /* ISSoundAdditions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +119,7 @@
 		07DF436029B1CB0F009ED75C /* myapp */ = {
 			isa = PBXGroup;
 			children = (
+				075AE4902BDE827F003821FC /* myappRelease.entitlements */,
 				07674D9529C9B3DA00C0DCA6 /* bleManager.swift */,
 				07187D7429B305EB0087EA5E /* Info.plist */,
 				07DF436129B1CB0F009ED75C /* myappApp.swift */,
@@ -117,6 +131,11 @@
 				076117B62A44297300940D9C /* Constants.swift */,
 				07DF4C582A455860000ED9DA /* BLEServer.swift */,
 				07DF4C5A2A458803000ED9DA /* BLEViewModel.swift */,
+				07ABB1A12BB2EDC2009665F5 /* TestL2cap.swift */,
+				07A36C692BDE4AEE00F63F9E /* PacketManager.swift */,
+				078EA1002BC296D6006414A0 /* MediaRemoteHelper.swift */,
+				078EA1022BC2981D006414A0 /* MediaModel.swift */,
+				078EA1042BC2BE91006414A0 /* BLEConnection.swift */,
 			);
 			path = myapp;
 			sourceTree = "<group>";
@@ -162,6 +181,9 @@
 			dependencies = (
 			);
 			name = myapp;
+			packageProductDependencies = (
+				0743CF352BE6B72C009D356D /* ISSoundAdditions */,
+			);
 			productName = myapp;
 			productReference = 07DF435E29B1CB0F009ED75C /* myapp.app */;
 			productType = "com.apple.product-type.application";
@@ -210,7 +232,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					07DF435D29B1CB0F009ED75C = {
 						CreatedOnToolsVersion = 14.2;
@@ -234,6 +256,9 @@
 				Base,
 			);
 			mainGroup = 07DF435529B1CB0F009ED75C;
+			packageReferences = (
+				0743CF342BE6B72C009D356D /* XCRemoteSwiftPackageReference "ISSoundAdditions" */,
+			);
 			productRefGroup = 07DF435F29B1CB0F009ED75C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -277,11 +302,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				076117B72A44297300940D9C /* Constants.swift in Sources */,
+				07A36C6A2BDE4AEE00F63F9E /* PacketManager.swift in Sources */,
 				076117B52A4326D700940D9C /* bleScan.swift in Sources */,
+				078EA1052BC2BE91006414A0 /* BLEConnection.swift in Sources */,
 				07DF4C592A455860000ED9DA /* BLEServer.swift in Sources */,
+				078EA1012BC296D6006414A0 /* MediaRemoteHelper.swift in Sources */,
 				07674D9629C9B3DA00C0DCA6 /* bleManager.swift in Sources */,
 				07DF4C5B2A458803000ED9DA /* BLEViewModel.swift in Sources */,
 				07DF436429B1CB0F009ED75C /* ContentView.swift in Sources */,
+				07ABB1A22BB2EDC2009665F5 /* TestL2cap.swift in Sources */,
+				078EA1032BC2981D006414A0 /* MediaModel.swift in Sources */,
 				07DF436229B1CB0F009ED75C /* myappApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,6 +386,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -417,6 +448,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -440,15 +472,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = myapp/myapp.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"myapp/Preview Content\"";
+				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = myapp/Info.plist;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Do you allow automation?";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Create a gatt server";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Create gatt server ";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -469,16 +504,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = myapp/myapp.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_ENTITLEMENTS = myapp/myappRelease.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"myapp/Preview Content\"";
+				DEVELOPMENT_TEAM = 37FHLU3Q9L;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = myapp/Info.plist;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Do you allow automation?";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Create a gatt server";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Create gatt server ";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -499,9 +538,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1.0;
@@ -518,9 +559,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1.0;
@@ -536,9 +579,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = aks.myappUITests;
@@ -553,9 +598,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = aks.myappUITests;
@@ -606,6 +653,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0743CF342BE6B72C009D356D /* XCRemoteSwiftPackageReference "ISSoundAdditions" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/InerziaSoft/ISSoundAdditions";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0743CF352BE6B72C009D356D /* ISSoundAdditions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0743CF342BE6B72C009D356D /* XCRemoteSwiftPackageReference "ISSoundAdditions" */;
+			productName = ISSoundAdditions;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 07DF435629B1CB0F009ED75C /* Project object */;
 }

@@ -10,8 +10,11 @@ import SwiftUI
 @main
 struct myappApp: App {
     var body: some Scene {
-        WindowGroup {
+        MenuBarExtra("Syncify", systemImage: "macpro.gen3"){
             ContentView()
-        }
+        }.menuBarExtraStyle(.window)
+//        WindowGroup {
+////            ContentView()
+//        }
     }
 }

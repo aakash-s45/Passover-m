@@ -39,11 +39,13 @@ class BLEClient: NSObject,ObservableObject,CBCentralManagerDelegate,CBPeripheral
             isSwitchedOn = false
         }
     }
+    
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         print("Found device: ")
         print(peripheral.name ?? "Unknown")
         scanResults[peripheral.identifier] = peripheral
     }
+    
     func startScan(){
         print("Start Scanning")
         isScanning = true
@@ -98,7 +100,7 @@ class BLEClient: NSObject,ObservableObject,CBCentralManagerDelegate,CBPeripheral
 //    ------------ peripheral delegates -------------
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         print("Service discovered")
-        var services:[CBService]? = peripheral.services
+        let services:[CBService]? = peripheral.services
         services?.forEach{service in
             print(service.uuid)
             if(service.uuid == BLEUtils.serviceID){
@@ -109,13 +111,14 @@ class BLEClient: NSObject,ObservableObject,CBCentralManagerDelegate,CBPeripheral
     }
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         print("Characteristics found for service: \(service.uuid)")
-        var characteristics:[CBCharacteristic]? = service.characteristics
+        let characteristics:[CBCharacteristic]? = service.characteristics
         characteristics?.forEach{ch in
             print("Characteristic uuid: \(ch.uuid)")
             if(ch.uuid==BLEUtils.characteristicID){
                 gattCharacteristic = ch
                 isCharFound = true
-                sendMessage(message: "Heeeelo from ble app")
+                print("Sending message over ble")
+                sendMessage(message: MediaManager.shared.getMediaData())
             }
         }
     }
