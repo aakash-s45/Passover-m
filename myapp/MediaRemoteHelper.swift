@@ -43,7 +43,7 @@ class MediaRemoteHelper {
 
     static func debounceNowPlayingInfo(_ bundleIdentifier:String?) {
         debounceTimer?.invalidate()
-        debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { _ in
             fetchNowPlayingInfo(bundleIdentifier)
         }
     }

@@ -11,8 +11,14 @@ import CoreBluetooth
 
 class BLEStateManager{
     static let shared = BLEStateManager()
+    
     var isConnected: Bool = false
     var isScanning: Bool = false
+    var scanResults = [String]()
+    
+    
+    
+    
     var acceptWrite: Bool = false
     var currentPeripheral: CBPeripheral? = nil
     var outputCharacteristic: CBCharacteristic? = nil
@@ -43,6 +49,10 @@ class BLEStateManager{
             self.acceptWrite = true
             self.currentPeripheral = peripheral
             self.outputCharacteristic = characteristic
+            PacketManager.shared.sendPacket(packet: AccessKeyManager.shared.getKeyData(), forceWrite: true)
+            MediaRemoteHelper.getNowPlayingInfo()
+//            MediaManager.shared.publishData(overrideData: true)
+//            PacketManager.shared.sendInitPacket()
         }
         else{
             self.acceptWrite = false
@@ -52,3 +62,6 @@ class BLEStateManager{
         }
     }
 }
+
+
+

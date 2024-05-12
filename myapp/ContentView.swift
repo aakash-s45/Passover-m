@@ -19,8 +19,6 @@ import ISSoundAdditions
 
 
 struct ContentView: View {
-    var msg = "hello app"
-    var newClient = NewBleClient()
     
 
 //    let center = UNUserNotificationCenter.current()
@@ -45,21 +43,11 @@ struct ContentView: View {
 ////            }
 ////        }
 //    }
-    
+
     
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor).onAppear{
-//
-                }
-            Button("hello", action: {
-//                print("board \(NSPasteboard.general.string(forType: .string))")
-//                print("board \(NSPasteboard.general.string(forType: .png))")
-                AVPlayer.init().pause()
-            })
-
+            HomePageView()
         }
         .padding()
     }
@@ -71,3 +59,6 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+
+
+

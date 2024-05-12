@@ -46,7 +46,7 @@ class MediaManager{
     
     private init(){}
     
-    func updateMediaInfo(info: [String: Any]){
+    func updateMediaInfo(info: [String: Any], override:Bool = false){
         self.title = info[MediaInfo.title] as? String ?? ""
         self.artist = info[MediaInfo.artist] as? String ?? ""
         self.album = info[MediaInfo.album] as? String ?? ""
@@ -58,14 +58,19 @@ class MediaManager{
         self.volume = Sound.output.volume
         print("MediaData Updated!: \(getMediaData())")
         publishData()
-//    TODO: uncomment the line below to send artwork packets
+
         let _artworkId:String = "\(title)_\(artist)"
         if(_artworkId != self.artworkId){
             print("artwork size: \(artwork.count)")
             self.artworkId = _artworkId
             self.segmentData()
         }
-// TODO: till here (artwork)
+
+    }
+    
+    func cleaMediaState(){
+        self.artworkId = ""
+        self.lastPublishedData = ""
     }
     
 
@@ -73,14 +78,13 @@ class MediaManager{
         return "M_\(title)_\(artist)_\(album)_\(duration)_\(elapsed)_\(playbackRate)_\(bundle)_\(volume)"
     }
     
-    func publishData(){
+    func publishData(overrideData:Bool = false){
 
         let bleState = BLEStateManager.shared
-        
-        if(bleState.acceptWrite){
+        if(bleState.acceptWrite || overrideData){
             print("Publishing media data!")
             let message = MediaManager.shared.getMediaData()
-            if(message == lastPublishedData){
+            if(message == lastPublishedData && !overrideData){
                 return
             }
             let metadataPacket = BPacket(type: "M", seq: Int32(message.count), data: message.data(using: .utf8)!)
@@ -89,11 +93,12 @@ class MediaManager{
         }
     }
     
+    
     func segmentData(){
         let packetManager = PacketManager.shared
         if !self.artwork.isEmpty{
             print("segmentData request")
-            var pngData = convertTiffToPng(imageData: self.artwork as Data)
+            let pngData = convertTiffToPng(imageData: self.artwork as Data)
             if pngData == nil {
                 print("no data to segment")
                 return

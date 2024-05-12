@@ -17,6 +17,8 @@ class BLEUtils{
     static let descriptor2 = CBUUID(string: "386AA42F-5FA5-4A82-B60E-49C08E450053")
     static let desData1 = "Send Characteristic".data(using: .utf8)
     static let desData2 = "Confirm Characteristic".data(using: .utf8)
+    
+    static let saveIdentifierKey = "ble.savedidentifiers"
 }
 
 class MediaInfo{

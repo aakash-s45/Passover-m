@@ -53,6 +53,10 @@ class PacketManager{
         print(self.chunks.count)
         print("Total segments done: \(self.chunks.count)")
 //        TODO: uncomment the line below to send artwork packets
+        sendInitPacket()
+    }
+    
+    func sendInitPacket(){
         self.sendPacket(packet: BPacket(type: "I", seq: Int32(self.chunks.count), data: method.data(using: .utf8)!))
     }
     
@@ -68,10 +72,10 @@ class PacketManager{
         return nil
     }
     
-
     
-    func sendPacket(packet: BPacket){
-        if(bleState.acceptWrite){
+    func sendPacket(packet: BPacket, forceWrite:Bool = false){
+
+        if(bleState.acceptWrite || forceWrite){
             let _packet = packet.toData()
             bleState.currentPeripheral?.writeValue(_packet, for: bleState.outputCharacteristic!, type: .withResponse)
         }
@@ -80,6 +84,7 @@ class PacketManager{
     func readNotification(mesage: String){
         let data = mesage.split(separator: ":")
         if !data.isEmpty{
+            print("data: \(data[0])")
             if(data[0]=="ACK"){
                 if(method == "reliable"){
                     guard let seq = Int(data[1]) else {
@@ -105,6 +110,19 @@ class PacketManager{
                     bleState.currentPeripheral?.readValue(for: bleState.readCharacteristic!)
                 }
             }
+            else if(data[0] == "REMOTE"){
+                print("Its a remote request !!")
+                readRemoteMessage(message: mesage)
+            }
+            else if(data[0] == "DESTROY"){
+                BLEViewModel.shared.disconnect()
+//                TODO: restart all
+            }
+            else if(data[0] == "REFRESH" || data[0] == "CONNECT"){
+                self.sendPacket(packet: AccessKeyManager.shared.getKeyData(), forceWrite: true)
+                MediaManager.shared.cleaMediaState()
+                MediaRemoteHelper.getNowPlayingInfo()
+            }
             else if(data[0] == "CONNECTED"){
                 print("Its a read request notification!!")
                 if(bleState.readCharacteristic != nil){
@@ -115,10 +133,9 @@ class PacketManager{
     }
     
     func readRemoteMessage(message: String){
-        print("It's a read request data: \(message)")
         let data = message.split(separator: ":")
         if !data.isEmpty{
-            let event = data[0]
+            let event = data[1]
             let commandPrefix = "shortcuts run BLEShortcut -i"
             if (event.contains("PLAY")){
                 runShellCommand(command: "\(commandPrefix) 'PLAY'")
@@ -143,15 +160,15 @@ class PacketManager{
                 Sound.output.decreaseVolume(by: 0.0625)
             }
             else if(event.contains("SEEKM")){
-                print("Data[1]: \(data[1])")
-                guard let seekValue = Int(data[1]) else {
-                    return
-                }
-                print("Data[1]: \(seekValue)")
+                
+//                guard let seekValue = Int(data[2]) else {
+//                    print("can't seek: \(message)")
+//                    return
+//                }
 //                runShellCommand(command: "\(commandPrefix) 'SEEKM_\(String(describing: Int()))'")
             }
             else if(event.contains("SEEKV")){
-                if let doubleValue = Double(data[1]) {
+                if let doubleValue = Double(data[2]) {
                     let seekValue = Int(doubleValue)
                     runShellCommand(command: "\(commandPrefix) 'SEEKV_\(seekValue)'")
                 } else {

@@ -20,55 +20,102 @@ class NewBleClient:NSObject, CBCentralManagerDelegate{
         super.init()
         self.peripheralDelegate = BleClientPeripheralDelegate()
         centralManager = CBCentralManager(delegate:self, queue: centralQueue)
-        MediaRemoteHelper.getNowPlayingInfo()
+        _ = AccessKeyManager.shared.getCurrentKey()
     }
+    
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, timestamp: CFAbsoluteTime, isReconnecting: Bool, error: (any Error)?) {
+        print("reconnection to peripheral isReconnecting: \(isReconnecting)")
+        print("reconnection to peripheral timestamp: \(timestamp)")
+        print("reconnection to peripheral didDisconnectPeripheral: \(peripheral.description)")
+        
+    }
+    
+    
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        if central.state == .poweredOn{
-            print("NewBle: central.state is .poweredOn")
-            startScan()
-            print("NewBle: scan!")
-        }
-        else{
-            print("NewBle: central.state is .poweredOff")
+        // In your application, you would address each possible value of central.state and central.authorization
+        switch central.state {
+        case .resetting:
+            print("Connection with the system service was momentarily lost. Update imminent")
+        case .unsupported:
+            print("Platform does not support the Bluetooth Low Energy Central/Client role")
+        case .unauthorized:
+            switch central.authorization {
+            case .restricted:
+                print("Bluetooth is restricted on this device")
+            case .denied:
+                print("The application is not authorized to use the Bluetooth Low Energy role")
+            default:
+                print("Something went wrong. Cleaning up cbManager")
+            }
+        case .poweredOff:
+            print("Bluetooth is currently powered off")
+        case .poweredOn:
+            print("Starting cbManager")
+            let uuid = BLEViewModel.shared.savedidentifier
+            if uuid==nil{
+                startScan()
+            }
+            else{
+                let peripheral_list = central.retrievePeripherals(withIdentifiers: [uuid!])
+                
+                for peripheral in peripheral_list {
+                    print("peripheral from identifier: \(peripheral.debugDescription)")
+                    if peripheral.state == CBPeripheralState.disconnected {
+                        var connectOptions:[String:Any] = [CBConnectPeripheralOptionNotifyOnDisconnectionKey: true]
+                        if #available(macOS 14.0, *) {
+                            connectOptions.updateValue(true, forKey: CBConnectPeripheralOptionEnableAutoReconnect)
+                        } else {
+                            print("autoconnect not support for this macos version")
+                            
+                        }
+                        print("can send: \(peripheral.canSendWriteWithoutResponse)")
+                        central.connect(peripheral, options: connectOptions)
+                        peripheralDevice = peripheral
+                        break
+                    }
+                }
+            }
+        default:
+            print("Cleaning up cbManager")
         }
     }
     
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        let name = peripheral.name
+        print("NewBle: Found device: \(peripheral.identifier), rssi:\(RSSI)")
+        BLEViewModel.shared.updateScanResult(peripheral: peripheral, rssi: RSSI)
+        if (name != nil){
+            print(name!)
+        }
+//        print(peripheral.identifier.uuidString)
+//        connect(toPeripheral: peripheral)
+
+    }
+    
+
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        print("NewBle: Central manager connected to peripheral: \(peripheral.identifier)")
-        print("MTU: \(peripheral.maximumWriteValueLength(for: .withResponse))")
+        print("NewBle: Central manager connected to peripheral: \(peripheral.identifier) | MTU with: \(peripheral.maximumWriteValueLength(for: .withResponse))")
+        BLEViewModel.shared.updateCurrentDevice(device: peripheral)
         peripheral.delegate = peripheralDelegate
         peripheral.discoverServices([BLEUtils.serviceID1])
         BLEStateManager.shared.change(isConnected: true)
+//        PacketManager.shared.sendPacket(packet: AccessKeyManager.shared.getKeyData(), forceWrite: true)
+
+
+//        MediaRemoteHelper.getNowPlayingInfo()
+//        MediaManager.shared.publishData(overrideData: true)
+//        PacketManager.shared.sendInitPacket()
     }
+    
     
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: (any Error)?) {
         print("NewBle: Central manager failed to connect to peripheral: \(peripheral.identifier) due to: \(String(describing: error?.localizedDescription))")
         BLEStateManager.shared.change(isConnected: false)
     }
     
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        let name = peripheral.name
-        print("NewBle: Found device: \(peripheral.identifier)")
-        if (name != nil){
-            print(name!)
-        }
-        print(peripheral.identifier.uuidString)
-        
-        print("NewBle: trying to connect now!")
-        connect(toPeripheral: peripheral)
+    
 
-        let id = UUID(uuidString: "E0B84E6D-A385-5C70-9BDF-D021297F9EDF")
-        let list = central.retrieveConnectedPeripherals(withServices: [BLEUtils.serviceID1])
-        let list1 = central.retrievePeripherals(withIdentifiers: [id!])
-        print("Retreived peripherals \(list.description)")
-        print("Retreived peripherals1 \(list1.description)")
-
-/*
- NewBle: Found device: B2B36C02-AABF-9374-D5CB-84D567E7C866
- NewBle: Found device: 823D10ED-D53F-8EC6-AFAF-A394BED67426
- */
-    }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: (any Error)?) {
         print("peripheral disconnected: \(peripheral.description)")
@@ -78,7 +125,7 @@ class NewBleClient:NSObject, CBCentralManagerDelegate{
 /* ----------- Helper functions ----------------*/
     func startScan(){
         print("NewBle: Start Scanning")
-        isScanning = true
+        BLEViewModel.shared.updateScanStatus(status: true)
         centralManager.scanForPeripherals(withServices: [BLEUtils.serviceID])
 
         timer?.invalidate()
@@ -89,8 +136,8 @@ class NewBleClient:NSObject, CBCentralManagerDelegate{
     }
     
     func stopScan(){
-        isScanning = false
         centralManager.stopScan()
+        BLEViewModel.shared.updateScanStatus(status: true)
     }
     
     func connect(toPeripheral peripheral:CBPeripheral){
@@ -108,6 +155,7 @@ class NewBleClient:NSObject, CBCentralManagerDelegate{
 }
 
 class BleClientPeripheralDelegate:NSObject, CBPeripheralDelegate{
+    
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: (any Error)?) {
         print("NewBle: Service discovered")
         let services:[CBService]? = peripheral.services
@@ -127,10 +175,8 @@ class BleClientPeripheralDelegate:NSObject, CBPeripheralDelegate{
             print("NewBle: Characteristic uuid: \(ch.uuid)")
             if(ch.uuid==BLEUtils.characteristicID){
                 BLEStateManager.shared.change(currentPeripheral: peripheral, characteristic: ch)
-                print("Sending message over ble")
             }
             if (ch.uuid == BLEUtils.characteristicID2){
-//                peripheral.readValue(for: ch)
                 peripheral.setNotifyValue(true, for: ch)
                 
             }
@@ -138,8 +184,7 @@ class BleClientPeripheralDelegate:NSObject, CBPeripheralDelegate{
     }
     
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: (any Error)?) {
-        print("NewBle: Write characteristic Success 🔼")
-        
+        print("NewBle: Write characteristic Success 🔼, read: \(String(describing: characteristic.value))")
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: (any Error)?) {
@@ -150,6 +195,7 @@ class BleClientPeripheralDelegate:NSObject, CBPeripheralDelegate{
             let subData = String(data[startIdx...])
             let packetManager = PacketManager.shared
             if(data.starts(with: "N")){
+                print("notification")
                 packetManager.readNotification(mesage: subData)
             }
             else if(data.starts(with: "R")){
@@ -173,6 +219,7 @@ class BleClientPeripheralDelegate:NSObject, CBPeripheralDelegate{
     func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: (any Error)?) {
         print("RSSI value: \(RSSI.description)")
     }
+    
 
 }
 
