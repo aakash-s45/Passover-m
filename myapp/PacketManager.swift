@@ -8,62 +8,87 @@
 import Foundation
 import AppKit
 import ISSoundAdditions
+import OSLog
 
 
-struct BPacket{
-    var type: Character
-    var seq: Int32
-    var data: Data
-    
-    func toData() -> Data{
-        var _data = Data()
-        _data.append(type.asciiValue!)
-        _data.append(contentsOf: withUnsafeBytes(of: seq.bigEndian, Array.init))
-        _data.append(contentsOf: data)
-        return _data
-    }
-}
 
 class PacketManager{
     static let shared = PacketManager()
 //    private let method = "reliable"
     private let method = "fast"
     
-    private let bleState = BLEStateManager.shared
-    private var chunkSize: Int = 507
+    private var chunkSize: Int = 980
     private var chunks:[BPacket] = []
     
     private init(){}
     
+    func sendImageData(data: Data){
+        let dataSize = data.count
+        let imagePacket = BPacket.with {
+            $0.type = MessageType.graphics
+            $0.graphic = Graphic.with{
+                $0.seq = 0
+                $0.data = data
+            }
+        }
+        self.send(packet: imagePacket)
+    }
+    
+    func sendClipboardData(text: String, type: String){
+        let clipData = BPacket.with{
+            $0.type = MessageType.clipboard
+            $0.clipboard = ClipBoard.with{
+                $0.text = text
+                $0.timestamp =  String(describing: NSDate().timeIntervalSince1970)
+                $0.origin = type
+            }
+        }
+        self.send(packet: clipData)
+    }
+    
 //    split data into segments
     func segmentData(data: Data){
-        print("Segmenting data.....")
+        chunkSize = data.count
+        Logger.connection.debug("Segmenting data.....")
         chunks.removeAll()
         let dataSize = data.count
-        print("Current data size: \(dataSize)")
+        Logger.connection.info("Segmented data size: \(dataSize)")
         let totalChunks = Int(ceil(Double(dataSize) / Double(chunkSize)))
+        
         
         for cid in 0..<totalChunks{
             let start = cid * chunkSize
             let end = min(start + chunkSize, dataSize)
             let chunk = data.subdata(in: start..<end)
-            self.chunks.append(BPacket(type: "G", seq: Int32(cid), data: chunk))
+            
+            let imagePacket = BPacket.with {
+                $0.type = MessageType.graphics
+                $0.graphic = Graphic.with{
+                    $0.seq = Int32(cid)
+                    $0.data = chunk
+                }
+            }
+            self.chunks.append(imagePacket)
         }
         
-        print(self.chunks.count)
+
         print("Total segments done: \(self.chunks.count)")
 //        TODO: uncomment the line below to send artwork packets
         sendInitPacket()
     }
     
+    
     func sendInitPacket(){
-        self.sendPacket(packet: BPacket(type: "I", seq: Int32(self.chunks.count), data: method.data(using: .utf8)!))
+        let _init = BPacket.with {
+            $0.type = MessageType.metadata
+            $0.metadata = MetaData.with{
+                $0.type = method
+                $0.size = Int32(self.chunks.count)
+            }
+        }
+        self.send(packet: _init)
     }
     
-    
-    func generatePacket(type:Character = "G", seq:Int32 = 0, data:Data = Data())->BPacket{
-        return BPacket(type:type, seq: seq, data: data)
-    }
     
     func nextPacket(seq: Int32)->BPacket?{
         if seq-1 < chunks.count{
@@ -73,13 +98,17 @@ class PacketManager{
     }
     
     
-    func sendPacket(packet: BPacket, forceWrite:Bool = false){
-
-        if(bleState.acceptWrite || forceWrite){
-            let _packet = packet.toData()
-            bleState.currentPeripheral?.writeValue(_packet, for: bleState.outputCharacteristic!, type: .withResponse)
+    func send(packet: BPacket, forceWrite:Bool = false){
+        do {
+            let _data = try packet.serializedData()
+//            Logger.connection.info("Size of chunk: \(_data.count)")
+            BluetoothViewModel.shared.connectionState.writeData(data: _data)
+        }catch let error{
+            Logger.connection.error("Failed to send packet due to \(error)")
         }
     }
+    
+
     
     func readNotification(mesage: String){
         let data = mesage.split(separator: ":")
@@ -93,49 +122,37 @@ class PacketManager{
                     }
                     if (seq >= 0 && seq<chunks.count){
                         print("Sending packet for seq: \(seq) / \(chunks.count)")
-                        self.sendPacket(packet: self.chunks[seq])
+                        self.send(packet: self.chunks[seq])
                     }
                 }
                 else if(method == "fast"){
                     print("Sending packet for all seq")
                     for chunk in chunks {
-                        self.sendPacket(packet: chunk)
+                        self.send(packet: chunk)
+//                        break
                     }
                 }
                 
             }
-            else if(data[0] == "READ"){
-                print("Its a read request notification!!")
-                if(bleState.readCharacteristic != nil){
-                    bleState.currentPeripheral?.readValue(for: bleState.readCharacteristic!)
-                }
-            }
-            else if(data[0] == "REMOTE"){
-                print("Its a remote request !!")
-                readRemoteMessage(message: mesage)
-            }
             else if(data[0] == "DESTROY"){
-                BLEViewModel.shared.disconnect()
+//                TODO: update this method
+                BluetoothViewModel.shared.disconnect()
 //                TODO: restart all
             }
             else if(data[0] == "REFRESH" || data[0] == "CONNECT"){
-                self.sendPacket(packet: AccessKeyManager.shared.getKeyData(), forceWrite: true)
                 MediaManager.shared.cleaMediaState()
                 MediaRemoteHelper.getNowPlayingInfo()
             }
             else if(data[0] == "CONNECTED"){
                 print("Its a read request notification!!")
-                if(bleState.readCharacteristic != nil){
-                    bleState.currentPeripheral?.readValue(for: bleState.readCharacteristic!)
-                }
             }
         }
     }
     
-    func readRemoteMessage(message: String){
+    func readCommand(message: String){
         let data = message.split(separator: ":")
         if !data.isEmpty{
-            let event = data[1]
+            let event = data[0]
             let commandPrefix = "shortcuts run BLEShortcut -i"
             if (event.contains("PLAY")){
                 runShellCommand(command: "\(commandPrefix) 'PLAY'")
@@ -168,7 +185,7 @@ class PacketManager{
 //                runShellCommand(command: "\(commandPrefix) 'SEEKM_\(String(describing: Int()))'")
             }
             else if(event.contains("SEEKV")){
-                if let doubleValue = Double(data[2]) {
+                if let doubleValue = Double(data[1]) {
                     let seekValue = Int(doubleValue)
                     runShellCommand(command: "\(commandPrefix) 'SEEKV_\(seekValue)'")
                 } else {
@@ -195,9 +212,35 @@ func runShellCommand(command: String) {
 }
 
 
+func applyBlur(to imageData: Data, radius: CGFloat) -> Data? {
+    guard let inputImage = CIImage(data: imageData) else { return nil }
+    
+    let filter = CIFilter(name: "CIGaussianBlur")
+    filter?.setValue(inputImage, forKey: kCIInputImageKey)
+    filter?.setValue(radius, forKey: kCIInputRadiusKey)
+    
+    guard let outputImage = filter?.outputImage else { return nil }
+    
+    let context = CIContext()
+    guard let cgImage = context.createCGImage(outputImage, from: inputImage.extent) else { return nil }
+    
+    let blurredImage = NSImage(cgImage: cgImage, size: NSSize(width: inputImage.extent.width, height: inputImage.extent.height))
+    guard let tiffData = blurredImage.tiffRepresentation else { return nil }
+    
+    return tiffData
+}
+
 func convertTiffToPng(imageData: Data) -> Data? {
     
-    guard let image = NSImage(data: imageData) else {
+
+    var imageTosend = imageData
+    var compressionRatio = 0.25
+    if (imageData.count < 40*512){
+        imageTosend = applyBlur(to: imageData, radius: 1.5) ?? imageData
+        compressionRatio = 1.0
+    }
+    
+    guard let image = NSImage(data: imageTosend) else {
         print("Failed to create NSImage from TIFF data.")
         return nil
     }
@@ -212,10 +255,7 @@ func convertTiffToPng(imageData: Data) -> Data? {
         return nil
     }
     
-    var compressionRatio = 0.25
-    if (imageData.count < 40*512){
-        compressionRatio = 1.0
-    }
+    
 
     
     let properties: [NSBitmapImageRep.PropertyKey: Any] = [

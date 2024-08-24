@@ -8,33 +8,34 @@
 import Foundation
 import SwiftUI
 import CoreBluetooth
+import IOBluetooth
 
 struct ScanResults: View {
-    @EnvironmentObject var bleViewModel: BLEViewModel
+    @EnvironmentObject var bluetoothViewModel: BluetoothViewModel
     var body: some View {
         Text("Scan Result").font(.headline)
-        List(bleViewModel.scanResults.sorted(by: { $0.value.intValue < $1.value.intValue }), id: \.key) { pair in
-                    let peripheral = pair.key
-                    let value = pair.value
-                    DeviceRowView(peripheral: peripheral, rssi: value).onTapGesture {
-                        bleViewModel.connectToDevice(peripheral: peripheral)
-                    }
+//        List(bleViewModel.scanResults.sorted(by: { $0.value.intValue < $1.value.intValue }), id: \.key) { pair in
+//                    let peripheral = pair.key
+//                    let value = pair.value
+//                    DeviceRowView(peripheral: peripheral, rssi: value).onTapGesture {
+//                        bleViewModel.connectToDevice(peripheral: peripheral)
+//                    }
         
-        }
-        Button("Stop Scan", action: {
-            bleViewModel.stopScan()
-        })
+//        }
+//        Button("Stop Scan", action: {
+////            bleViewModel.stopScan()
+//        })
     }
 }
 
 
 struct DeviceRowView: View {
-    let peripheral: CBPeripheral
+    let device: IOBluetoothDevice
     let rssi: NSNumber
 
     var body: some View {
         HStack {
-            Text(peripheral.name ?? "Unknown Device")
+            Text(device.nameOrAddress ?? "Unknown Device")
             Spacer()
             RSSIColorDotView(rssi: rssi.intValue)
         }
@@ -70,13 +71,13 @@ struct RSSIColorDotView: View {
 
 
 struct CurrentDevice : View{
-    let peripheral: CBPeripheral
+    let device: IOBluetoothDevice
     let rssi: Int
-    @EnvironmentObject var bleViewModel:BLEViewModel
+    @EnvironmentObject var bluetoothViewModel:BluetoothViewModel
     var body: some View {
         VStack{
             Text("Current Device").font(.headline)
-            DeviceRowView(peripheral: peripheral, rssi: 0)
+            DeviceRowView(device: device, rssi: 0)
         }
     }
 }

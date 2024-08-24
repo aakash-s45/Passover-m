@@ -10,29 +10,39 @@
 import Foundation
 
 import CoreBluetooth
+import IOBluetooth
 
-class BLEViewModel: ObservableObject {
-    static let shared = BLEViewModel()
-
+class BluetoothViewModel: ObservableObject {
+    static let shared = BluetoothViewModel()
+    
+    
     @Published var isSwitchedOn = false
-    @Published var isConnected = false
     @Published var isScanning = false
-    @Published var currentDevice: CBPeripheral? = nil
-    @Published var scanResults: [CBPeripheral: NSNumber] = [:]
+    @Published var isConnected = false
+    @Published var deviceName = ""
 
-    private var accessKey: String? = nil
-    var savedidentifier: UUID? = nil
-    private var bleClient: NewBleClient? = nil
+    @Published var currentDevice: IOBluetoothDevice? = nil
+    @Published var scanResults: [IOBluetoothDevice: NSNumber] = [:]
+    
+    var savedidentifier: String? = nil
+    var devcieControl:DeviceControl? = nil
+    let scale = 120.0
+    var connectionState:ConnectionState = ConnectionState()
+    var clipboard:ClipboardHandler?
+    
 
     private init() {
-        let keyManager = AccessKeyManager.shared
-        keyManager.rotateKey()
-        self.accessKey = keyManager.getCurrentKey()
-
         if let identifier = UserDefaults.standard.object(forKey: BLEUtils.saveIdentifierKey) {
-            self.savedidentifier = UUID(uuidString: identifier as! String)
+            self.savedidentifier = (identifier as! String)
         }
-        self.bleClient = NewBleClient()
+        DispatchQueue.main.async { self.startClient() }
+    }
+    
+    
+    
+    func startClient(){
+        connectionState.start()
+        clipboard = ClipboardHandler()
     }
 
     func updateScanStatus(status: Bool = false) {
@@ -53,18 +63,26 @@ class BLEViewModel: ObservableObject {
         }
     }
 
-    func updateCurrentDevice(device: CBPeripheral) {
+    func updateCurrentDevice(device: IOBluetoothDevice) {
         DispatchQueue.main.async {
             self.currentDevice = device
+            if device.name != nil{
+                self.deviceName = device.nameOrAddress!
+            }
+            else{
+                self.deviceName = "Bluetooth Device"
+            }
+            self.devcieControl = DeviceControl.shared
+            
         }
     }
 
-    func updateScanResult(peripheral: CBPeripheral, rssi: NSNumber, override: Bool = false) {
+    func updateScanResult(device: IOBluetoothDevice, rssi: NSNumber, override: Bool = false) {
         DispatchQueue.main.async {
             if override {
                 self.scanResults.removeAll()
             }
-            self.scanResults[peripheral] = rssi
+            self.scanResults[device] = 0
         }
     }
 
@@ -79,13 +97,15 @@ class BLEViewModel: ObservableObject {
 
     func clearIdentifiers() {
         UserDefaults.standard.removeObject(forKey: BLEUtils.saveIdentifierKey)
+        self.devcieControl = nil
     }
     
-    func connectToDevice(peripheral: CBPeripheral){
-        bleClient?.connect(toPeripheral: peripheral)
-        self.updateIdentifier(identifier: peripheral.identifier.uuidString)
+    func connect(device: IOBluetoothDevice){
+//        ConnectionState.shared.connect(to: "98-09-cf-a5-f2-ef")
+        connectionState.connect(to: device.addressString)
+        self.updateIdentifier(identifier: device.addressString)
         DispatchQueue.main.async {
-            self.currentDevice = peripheral
+            self.currentDevice = device
             self.isScanning = false
         }
     }
@@ -93,15 +113,31 @@ class BLEViewModel: ObservableObject {
     
     func disconnect(){
         if self.currentDevice != nil{
-            bleClient?.disconnectDevice(fromPeripheral: currentDevice!)
-            self.updateIdentifier(identifier: currentDevice!.identifier.uuidString)
-        }        
+            connectionState.disconnect()
+            self.updateIdentifier(identifier: currentDevice!.addressString)
+        }
+        self.devcieControl = nil
     }
     
     func startScan(){
-        bleClient?.startScan()
+        _ = connectionState.triggerDiscovery()
     }
     func stopScan(){
-        bleClient?.stopScan()
+        connectionState.stopDiscovery()
     }
+    
+//    call functions
+    
+}
+
+
+class DeviceControl{
+    static let shared = DeviceControl()
+    
+    var charge: Int = 5
+    var signal:Int = 5
+    var notificationCount = 6
+    
+    private init() {}
+    
 }

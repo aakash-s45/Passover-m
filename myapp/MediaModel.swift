@@ -10,6 +10,8 @@ import Compression
 import CoreBluetooth
 import AppKit
 import ISSoundAdditions
+import OSLog
+import SwiftProtobuf
 
 
 /*
@@ -56,16 +58,17 @@ class MediaManager{
         self.artwork = info[MediaInfo.artwork] as? NSData ?? NSData(data: Data())
         self.bundle = info[MediaInfo.bundle] as? String ?? ""
         self.volume = Sound.output.volume
-        print("MediaData Updated!: \(getMediaData())")
+        Logger.connection.debug("MediaData Updated!: \(self.getMediaData())")
         publishData()
-
+        
         let _artworkId:String = "\(title)_\(artist)"
         if(_artworkId != self.artworkId){
             print("artwork size: \(artwork.count)")
             self.artworkId = _artworkId
-            self.segmentData()
-        }
+                        self.segmentData()
 
+        }
+        
     }
     
     func cleaMediaState(){
@@ -73,23 +76,53 @@ class MediaManager{
         self.lastPublishedData = ""
     }
     
-
+    
     func getMediaData() -> String {
         return "M_\(title)_\(artist)_\(album)_\(duration)_\(elapsed)_\(playbackRate)_\(bundle)_\(volume)"
     }
     
-    func publishData(overrideData:Bool = false){
 
-        let bleState = BLEStateManager.shared
-        if(bleState.acceptWrite || overrideData){
-            print("Publishing media data!")
-            let message = MediaManager.shared.getMediaData()
-            if(message == lastPublishedData && !overrideData){
-                return
-            }
-            let metadataPacket = BPacket(type: "M", seq: Int32(message.count), data: message.data(using: .utf8)!)
-            bleState.currentPeripheral?.writeValue(metadataPacket.toData(), for: bleState.outputCharacteristic!, type: .withResponse)
+    func getCurrentTimestamp() -> Google_Protobuf_Timestamp {
+        let currentDate = Date()
+        var timestamp = Google_Protobuf_Timestamp()
+
+        timestamp.seconds = Int64(currentDate.timeIntervalSince1970)
+        timestamp.nanos = Int32((currentDate.timeIntervalSince1970.truncatingRemainder(dividingBy: 1)) * 1_000_000_000)
+        
+        return timestamp
+    }
+
+    
+    func publishData(overrideData:Bool = false){
+        Logger.connection.debug("Publishing media data!")
+        let conenctionState = BluetoothViewModel.shared.connectionState
+        let message = MediaManager.shared.getMediaData()
+        if(message == lastPublishedData && !overrideData){
+            Logger.connection.debug("Publishing message not changed!")
+            return
+        }
+        
+        let mediaDataPacket = BPacket.with {
+            $0.type = MessageType.mediadata
+            $0.mediaData = MediaData.with({
+                $0.title = self.title
+                $0.artist = self.artist
+                $0.album = self.album
+                $0.duration = self.duration
+                $0.elapsed = self.elapsed
+                $0.playbackRate = self.playbackRate
+                $0.bundle = self.bundle
+                $0.volume = self.volume
+                $0.timestamp = getCurrentTimestamp()
+            })
+        }
+        
+        do{
+            let mediaData:Data = try mediaDataPacket.serializedData()
             lastPublishedData = message
+            conenctionState.writeData(data: mediaData)
+        }catch let error{
+            Logger.connection.error("Failed to create mediaDataPacket to send due to \(error)")
         }
     }
     
@@ -97,19 +130,21 @@ class MediaManager{
     func segmentData(){
         let packetManager = PacketManager.shared
         if !self.artwork.isEmpty{
-            print("segmentData request")
+            Logger.connection.debug("segmentData request")
             let pngData = convertTiffToPng(imageData: self.artwork as Data)
             if pngData == nil {
-                print("no data to segment")
+                Logger.connection.error("no data to segment")
                 return
             }
-//            if need to resize the image, resize here
+            //            if need to resize the image, resize here
             packetManager.segmentData(data: pngData!)
             
         }
         else{
-            print("not data to segment")
+            Logger.connection.error("not data to segment")
         }
         
     }
+    
 }
+

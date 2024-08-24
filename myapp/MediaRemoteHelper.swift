@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 class MediaRemoteHelper {
     static var observation: NSObjectProtocol?
@@ -27,14 +28,14 @@ class MediaRemoteHelper {
 
     static func fetchNowPlayingInfo(_ bundleIdentifier: String?) {
         guard let MRMediaRemoteGetNowPlayingInfo = MRMediaRemoteGetNowPlayingInfo else {
-            print("MRMediaRemoteGetNowPlayingInfo is not available")
+            Logger.connection.error("MRMediaRemoteGetNowPlayingInfo is not available")
             return
         }
 
         let mainQueue = DispatchQueue.main
                 
         MRMediaRemoteGetNowPlayingInfo(mainQueue) { information in
-//            print("all info: \(information.debugDescription)")
+//            Logger.connection.debug("all info: \(information.debugDescription)")
             var customInfo = information
             customInfo["cusomtBundleIdentifier"] = bundleIdentifier
             mediaObj.updateMediaInfo(info:customInfo)

@@ -13,43 +13,16 @@ import UserNotifications
 import CoreBluetooth
 import AVFoundation
 import ISSoundAdditions
-
-
-
-
+import Cocoa
 
 struct ContentView: View {
-    
-
-//    let center = UNUserNotificationCenter.current()
-//    let content = UNMutableNotificationContent()
-//    init(){
-//        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-//            if let error = error {
-//                print(error.localizedDescription)
-//            }
-//            else{
-//                print("Permisson granted")
-//            }
-//            
-//        }
-//        content.title = "Weekly Staff Meeting"
-//        content.body = "Every Tuesday at 2pm"
-//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-//        _ = UNNotificationRequest(identifier: "Identifier", content: content, trigger: trigger)
-////        center.add( request){error in
-////            if let error = error{
-////                print(error)
-////            }
-////        }
-//    }
-
-    
     var body: some View {
         VStack {
             HomePageView()
         }
-        .padding()
+        .padding().onAppear(perform:{
+//            BluetoothViewModel.shared.startClient()
+        })
     }
 }
 
@@ -61,4 +34,93 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 
+class NotificationManager {
+    static let shared = NotificationManager()
+    
+    private let center = UNUserNotificationCenter.current()
+//    private let content = UNMutableNotificationContent()
+    
+    private init() {
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if let error = error {
+                print(error.localizedDescription)
+                
+            } else {
+                print("Permission granted")
+                self.setupNotificationActions()
+            }
+        }
+        
+    }
+    
+    func setupNotificationActions() {
+        let acceptAction = UNNotificationAction(identifier: "ACCEPT_ACTION",
+                                                title: "Accept",
+                                                options: [])
+        
+        let rejectAction = UNNotificationAction(identifier: "REJECT_ACTION",
+                                                title: "Reject",
+                                                options: [])
+        
+        let category = UNNotificationCategory(identifier: "PERSISTENT_NOTIFICATION",
+                                              actions: [acceptAction, rejectAction],
+                                              intentIdentifiers: [],
+//                                              hiddenPreviewsBodyPlaceholder: "",
+                                              options: [])
+        
+        self.center.setNotificationCategories([category])
+    }
+    
+    func triggerNotification(content: UNMutableNotificationContent) {
+//        self.showPersistentAlert()
+//        WindowManager.shared.openCallAlert()
+        return
 
+        let id = "call1234"
+        content.sound = .default
+        content.categoryIdentifier = "PERSISTENT_NOTIFICATION"
+        content.interruptionLevel = .active
+//        let attachments = UNNotificationAttachment(identifier: <#T##String#>, url: <#T##URL#>)
+//        content.attachments =
+        
+//        content.
+        
+        
+        
+        
+        let request = UNNotificationRequest(identifier: id, content: content, trigger: nil)
+        
+        center.add(request) { error in
+            if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+
+
+    func showPersistentAlert() {
+        let alert = NSAlert()
+        alert.messageText = "Weekly Staff Meeting"
+//        alert.informativeText = "Every Tuesday at 2pm"
+        alert.alertStyle = .informational
+//        alert.addButton(withTitle: "OK")
+//        alert.addButton(withTitle: "Dismiss")
+        
+        if let window = NSApplication.shared.windows.first {
+            
+//            alert.beginSheetModal(for: window) { (response) in
+//                if response == .alertFirstButtonReturn {
+//                    print("OK clicked")
+//                } else if response == .alertSecondButtonReturn {
+//                    print("Dismiss clicked")
+//                }
+//            }
+        } else {
+            alert.runModal()
+        }
+    }
+    
+
+
+}
