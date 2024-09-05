@@ -1,10 +1,3 @@
-//
-//  Utilities.swift
-//  myapp
-//
-//  Created by Aakash Solanki on 23/06/24.
-//
-
 import Foundation
 import OSLog
 
@@ -18,3 +11,4 @@ extension Logger {
     /// All logs related to tracking and analytics.
     static let viewCycle = Logger(subsystem: subsystem, category: "viewCycle")
 }
+

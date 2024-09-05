@@ -18,7 +18,8 @@ class BLEUtils{
     static let desData1 = "Send Characteristic".data(using: .utf8)
     static let desData2 = "Confirm Characteristic".data(using: .utf8)
     
-    static let saveIdentifierKey = "ble.savedidentifiers"
+    static let saveIdentifierAddressKey = "ble.savedidentifiers.address"
+    static let saveIdentifierNameKey = "ble.savedidentifiers.name"
 }
 
 class MediaInfo{

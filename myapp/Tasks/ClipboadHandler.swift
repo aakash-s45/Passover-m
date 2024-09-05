@@ -7,19 +7,26 @@
 
 import Foundation
 import AppKit
+import os
 
 class ClipboardHandler {
     private var pasteboard = NSPasteboard.general
     private var changeCount: Int
     private var isAddingData: Bool = false
+    private var timer:Timer? = nil
 
     init() {
         changeCount = pasteboard.changeCount
         startMonitoringClipboard()
     }
+    
+    deinit{
+        timer?.invalidate()
+        timer = nil
+    }
 
     private func startMonitoringClipboard() {
-        Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             self?.checkClipboard()
         }
     }
@@ -57,34 +64,21 @@ class ClipboardHandler {
         isAddingData = false
     }
 
-//    func gotNewData(data: Any) {
-//        if let base64String = data as? String {
-//            if let decodedData = Data(base64Encoded: base64String), let image = NSImage(data: decodedData) {
-//                PacketManager.shared.sendClipboardData(text: base64String, type: "img")
-//                print("New clipboard image (Base64): \(base64String)")
-//            } else {
-//                PacketManager.shared.sendClipboardData(text: base64String, type: "txt")
-//                print("New clipboard text: \(base64String)")
-//            }
-//        }
-//    }
     
     func gotNewData(data: Any) {
         if let base64String = data as? String {
             if let decodedData = Data(base64Encoded: base64String), let image = NSImage(data: decodedData) {
-                // Convert image to PNG format
                 if let pngData = convertToPNG(image: image) {
                     let pngBase64String = pngData.base64EncodedString()
-                    PacketManager.shared.sendClipboardData(text: pngBase64String, type: "img")
-                    print("New clipboard image (Base64 PNG): \(pngBase64String)")
+                    Logger.connection.debug("New clipboard image (Base64 PNG): \(pngBase64String)")
+                    self.publishData(text: pngBase64String, type: "img")
                 } else {
-                    // Fallback if conversion fails
-                    PacketManager.shared.sendClipboardData(text: base64String, type: "img")
-                    print("New clipboard image (Original Base64): \(base64String)")
+                    Logger.connection.debug("New clipboard image (Original Base64): \(base64String)")
+                    self.publishData(text: base64String, type: "img")
                 }
             } else {
-                PacketManager.shared.sendClipboardData(text: base64String, type: "txt")
-                print("New clipboard text: \(base64String)")
+                Logger.connection.debug("New clipboard text: \(base64String)")
+                self.publishData(text: base64String, type: "txt")
             }
         }
     }
@@ -95,5 +89,17 @@ class ClipboardHandler {
         return bitmap.representation(using: .png, properties: [:])
     }
 
+    
+    func publishData(text: String, type: String){
+        let clipData = BPacket.with{
+            $0.type = MessageType.clipboard
+            $0.clipboard = ClipBoard.with{
+                $0.text = text
+                $0.timestamp =  String(describing: NSDate().timeIntervalSince1970)
+                $0.origin = type
+            }
+        }
+        AppRepository.shared.writeData(data: clipData)
+    }
 }
 
