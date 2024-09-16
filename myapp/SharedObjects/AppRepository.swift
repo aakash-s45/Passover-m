@@ -11,34 +11,35 @@ import os
 
 class AppRepository{
     static let shared = AppRepository()
-    
-    private var bluetoothManager:BluetoothManager?
-    private var rfcommClient:RFCommClient?
+    var bluetoothClient: BluetoothClient?
     private var clipboardHandler: ClipboardHandler?
     private var packetManager: PacketManager?
     private var userPreference: UserPreferences?
     
-    init(){}
+    init(){Logger.connection.debug("repository init")}
+    
+    deinit{Logger.connection.debug("repository deinit")}
     
     func start(){
-        rfcommClient = RFCommClient()
+        Logger.connection.debug("Starting the app from repository")
         packetManager = PacketManager()
         clipboardHandler = ClipboardHandler()
         userPreference = UserPreferences()
-        bluetoothManager = BluetoothManager(rfcommClient: rfcommClient, userPreference: userPreference)
+        bluetoothClient = BluetoothClient()
     }
     
-    
     func stop(){
-        bluetoothManager = nil
-        rfcommClient = nil
+        bluetoothClient?.stop()
         clipboardHandler = nil
         packetManager = nil
     }
     
+    func scan(){
+        bluetoothClient?.startInquiry()
+    }
+    
     func stopInquiry(){
-        ConnectionViewModel.shared.update(is_scanning: false)
-        rfcommClient?.stopInquiry()
+        bluetoothClient?.stopInquiry()
     }
     
     func clearDevice(){
@@ -46,7 +47,9 @@ class AppRepository{
     }
     
     func select(device: IOBluetoothDevice){
-        bluetoothManager?.select(device: device)
+        userPreference?.update(identifier: device.addressString, name: device.nameOrAddress)
+        bluetoothClient?.update(device: device)
+        bluetoothClient?.start()
     }
     
     func readData(data:Data){
@@ -68,13 +71,10 @@ class AppRepository{
     
     func writeData(data: BPacket){
         if ConnectionViewModel.shared.is_connected{
-            if let client = rfcommClient{
+            if let client = bluetoothClient{
                 do {
                     let serialized_data = try data.serializedData()
-                    let status = client.writeData(data: serialized_data)
-                    if !status{
-                        Logger.connection.error("Failed to write data")
-                    }
+                    client.writeData(data: serialized_data)
                 }catch let error{
                     Logger.connection.error("Failed to send packet due to \(error)")
                 }
@@ -84,5 +84,16 @@ class AppRepository{
         else{
             Logger.connection.warning("Couldn't write message!")
         }
+    }
+    
+    func forgetDevice(){
+        self.stop()
+        userPreference?.clear()
+        ConnectionViewModel.shared.update(connected: false)
+        ConnectionViewModel.shared.update(is_device: false)
+    }
+
+    func getExistingDevice()->[(String)]{
+        return userPreference?.get() ?? []
     }
 }

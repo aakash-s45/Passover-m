@@ -2,7 +2,20 @@ import os
 import Combine
 import IOBluetooth
 
-class InquiryDelegate: NSObject, IOBluetoothDeviceInquiryDelegate{
+extension BluetoothClient: IOBluetoothDeviceInquiryDelegate{
+    
+    func startInquiry() {
+        Logger.connection.debug("Starting Inquiry")
+        self.inquiry = IOBluetoothDeviceInquiry(delegate: self)
+        self.inquiry?.start()
+    }
+    
+    func stopInquiry() {
+        inquiry?.stop()
+        inquiry = nil
+        Logger.connection.debug("Inquiry stopped")
+    }
+    
     func deviceInquiryStarted(_ sender: IOBluetoothDeviceInquiry!) {
         Logger.connection.debug("Device inquiry: started")
         ConnectionViewModel.shared.update(is_scanning: true)

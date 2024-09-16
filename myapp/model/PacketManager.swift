@@ -60,22 +60,19 @@ class PacketManager{
                 Sound.output.decreaseVolume(by: 0.0625)
             }
             else if(event.contains("SEEKM")){
-                
-//                guard let seekValue = Int(data[2]) else {
-//                    print("can't seek: \(message)")
-//                    return
-//                }
-//                runShellCommand(command: "\(commandPrefix) 'SEEKM_\(String(describing: Int()))'")
-            }
-            else if(event.contains("SEEKV")){
                 if let doubleValue = Double(data[1]) {
-                    let seekValue = Int(doubleValue)
-                    runShellCommand(command: "\(commandPrefix) 'SEEKV_\(seekValue)'")
+                    MediaRemoteHelper.setElapsedTime(doubleValue)
                 } else {
                     print("Invalid number format")
                 }
 
-
+            }
+            else if(event.contains("SEEKV")){
+                if let floatValue = Float(data[1]) {
+                    Sound.output.setVolume(floatValue, autoMuteUnmute: true)
+                } else {
+                    print("Invalid number format")
+                }
             }
         }
     }

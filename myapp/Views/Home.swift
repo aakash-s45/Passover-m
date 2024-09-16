@@ -9,12 +9,13 @@ import SwiftUI
 
 struct Home: View {
     @EnvironmentObject var bluetoothViewModel:ConnectionViewModel
+    @EnvironmentObject var handsfreeDeviceState:HFDState
     var body: some View {
         if bluetoothViewModel.is_powered_on{
             if bluetoothViewModel.is_connected{
                 ConnectedDevice()
             }
-            else if(bluetoothViewModel.is_hf_connected){
+            else if(handsfreeDeviceState.is_connected){
                 ConnectedDevice()
             }
             else{
@@ -23,14 +24,21 @@ struct Home: View {
                 }
                 else{
                     if bluetoothViewModel.is_scanning{
-                        ScanResult()
+                        VStack{
+                            ScanResult()
+                        }
                     }
                     else{
-                        if bluetoothViewModel.scanResult.isEmpty{
-                            Text("No device found")
-                        }
-                        else{
-                            ScanResult()
+                        VStack{
+                            if !bluetoothViewModel.scanResult.isEmpty{
+                                ScanResult()
+                            }
+                            else{
+                                Text("No device found")
+                            }
+                            Button("Scan"){
+                                AppRepository.shared.scan()
+                            }
                         }
                     }
                 }

@@ -7,30 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		072ACD152C3AA0960049A1E7 /* temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072ACD142C3AA0960049A1E7 /* temp.swift */; };
+		072EFC592C95C2C100BAF61B /* RFCommChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072EFC582C95C2C100BAF61B /* RFCommChannel.swift */; };
+		072EFC5D2C96184900BAF61B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072EFC5C2C96184800BAF61B /* AppDelegate.swift */; };
 		0743CF362BE6B72C009D356D /* ISSoundAdditions in Frameworks */ = {isa = PBXBuildFile; productRef = 0743CF352BE6B72C009D356D /* ISSoundAdditions */; };
 		076117B72A44297300940D9C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076117B62A44297300940D9C /* Constants.swift */; };
+		0762700B2C97378200950627 /* Passover.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0762700A2C97378200950627 /* Passover.icns */; };
 		0762C2582C2844F40077A8B6 /* Message.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0762C2562C2844F40077A8B6 /* Message.pb.swift */; };
 		0762C25B2C2846530077A8B6 /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = 0762C25A2C2846530077A8B6 /* SwiftProtobuf */; };
 		0762C25D2C2846530077A8B6 /* SwiftProtobufPluginLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 0762C25C2C2846530077A8B6 /* SwiftProtobufPluginLibrary */; };
 		0762C25F2C2846530077A8B6 /* protoc-gen-swift in Frameworks */ = {isa = PBXBuildFile; productRef = 0762C25E2C2846530077A8B6 /* protoc-gen-swift */; };
-		0762C2632C2846B30077A8B6 /* RFCommClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0762C2622C2846B30077A8B6 /* RFCommClient.swift */; };
 		078EFF6E2C834E6E003312D0 /* InquiryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF6D2C834E6E003312D0 /* InquiryDelegate.swift */; };
-		078EFF702C834EB3003312D0 /* RFCommDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF6F2C834EB3003312D0 /* RFCommDelegate.swift */; };
-		078EFF722C834EE7003312D0 /* RFCommDelegate2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF712C834EE7003312D0 /* RFCommDelegate2.swift */; };
 		078EFF742C834F2A003312D0 /* HandsfreeDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF732C834F2A003312D0 /* HandsfreeDelegate.swift */; };
 		078EFF772C834F81003312D0 /* ClipboadHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF762C834F81003312D0 /* ClipboadHandler.swift */; };
 		078EFF792C834FAD003312D0 /* MediaUpdateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF782C834FAD003312D0 /* MediaUpdateHandler.swift */; };
-		078EFF7C2C834FF7003312D0 /* BluetoothViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF7B2C834FF7003312D0 /* BluetoothViewModel.swift */; };
 		078EFF7E2C83506C003312D0 /* HandsfreeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF7D2C83506C003312D0 /* HandsfreeViewModel.swift */; };
-		078EFF812C8350B4003312D0 /* DeviceControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF802C8350B4003312D0 /* DeviceControl.swift */; };
 		078EFF842C8350DF003312D0 /* LogConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF832C8350DF003312D0 /* LogConfig.swift */; };
 		078EFF862C835103003312D0 /* MediaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF852C835103003312D0 /* MediaManager.swift */; };
 		078EFF882C83512E003312D0 /* PacketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF872C83512E003312D0 /* PacketManager.swift */; };
 		078EFF8A2C83516D003312D0 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF892C83516D003312D0 /* Utilities.swift */; };
 		078EFF8C2C8351F8003312D0 /* SimpleTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF8B2C8351F8003312D0 /* SimpleTimer.swift */; };
-		078EFF902C83529E003312D0 /* L2CAPDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF8F2C83529E003312D0 /* L2CAPDelegate.swift */; };
-		078EFF922C83532B003312D0 /* BluetoothConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF912C83532B003312D0 /* BluetoothConnectionDelegate.swift */; };
 		078EFF942C8356E4003312D0 /* AppRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF932C8356E4003312D0 /* AppRepository.swift */; };
 		078EFF962C835E11003312D0 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF952C835E11003312D0 /* UserPreferences.swift */; };
 		078EFF982C83999D003312D0 /* ConnectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF972C83999D003312D0 /* ConnectionViewModel.swift */; };
@@ -43,6 +38,7 @@
 		078EFFA72C864392003312D0 /* CallAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFFA62C864392003312D0 /* CallAlert.swift */; };
 		078EFFA92C86442E003312D0 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFFA82C86442E003312D0 /* Common.swift */; };
 		078EFFAB2C8647F8003312D0 /* CustomWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFFAA2C8647F8003312D0 /* CustomWindowManager.swift */; };
+		07BD2A342C90CCBF00DCBF5C /* DropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BD2A332C90CCBF00DCBF5C /* DropDown.swift */; };
 		07DF436229B1CB0F009ED75C /* myappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436129B1CB0F009ED75C /* myappApp.swift */; };
 		07DF436429B1CB0F009ED75C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436329B1CB0F009ED75C /* ContentView.swift */; };
 		07DF436629B1CB10009ED75C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DF436529B1CB10009ED75C /* Assets.xcassets */; };
@@ -50,6 +46,7 @@
 		07DF437429B1CB10009ED75C /* myappTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437329B1CB10009ED75C /* myappTests.swift */; };
 		07DF437E29B1CB10009ED75C /* myappUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437D29B1CB10009ED75C /* myappUITests.swift */; };
 		07DF438029B1CB10009ED75C /* myappUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437F29B1CB10009ED75C /* myappUITestsLaunchTests.swift */; };
+		07FAD6AF2C95BBCA00F7F9BA /* BluetoothClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FAD6AE2C95BBCA00F7F9BA /* BluetoothClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,27 +68,22 @@
 
 /* Begin PBXFileReference section */
 		07187D7429B305EB0087EA5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		072ACD142C3AA0960049A1E7 /* temp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = temp.swift; sourceTree = "<group>"; };
+		072EFC582C95C2C100BAF61B /* RFCommChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RFCommChannel.swift; sourceTree = "<group>"; };
+		072EFC5C2C96184800BAF61B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		075AE4902BDE827F003821FC /* myappRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myappRelease.entitlements; sourceTree = "<group>"; };
 		076117B62A44297300940D9C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		0762700A2C97378200950627 /* Passover.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Passover.icns; sourceTree = "<group>"; };
 		0762C2562C2844F40077A8B6 /* Message.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.pb.swift; sourceTree = "<group>"; };
-		0762C2622C2846B30077A8B6 /* RFCommClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RFCommClient.swift; sourceTree = "<group>"; };
-		078EFF6D2C834E6E003312D0 /* InquiryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquiryDelegate.swift; sourceTree = "<group>"; };
-		078EFF6F2C834EB3003312D0 /* RFCommDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RFCommDelegate.swift; sourceTree = "<group>"; };
-		078EFF712C834EE7003312D0 /* RFCommDelegate2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RFCommDelegate2.swift; sourceTree = "<group>"; };
+		078EFF6D2C834E6E003312D0 /* InquiryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InquiryDelegate.swift; path = ../Delegates/InquiryDelegate.swift; sourceTree = "<group>"; };
 		078EFF732C834F2A003312D0 /* HandsfreeDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandsfreeDelegate.swift; sourceTree = "<group>"; };
 		078EFF762C834F81003312D0 /* ClipboadHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboadHandler.swift; sourceTree = "<group>"; };
 		078EFF782C834FAD003312D0 /* MediaUpdateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaUpdateHandler.swift; sourceTree = "<group>"; };
-		078EFF7B2C834FF7003312D0 /* BluetoothViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothViewModel.swift; sourceTree = "<group>"; };
 		078EFF7D2C83506C003312D0 /* HandsfreeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandsfreeViewModel.swift; sourceTree = "<group>"; };
-		078EFF802C8350B4003312D0 /* DeviceControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceControl.swift; sourceTree = "<group>"; };
 		078EFF832C8350DF003312D0 /* LogConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogConfig.swift; sourceTree = "<group>"; };
 		078EFF852C835103003312D0 /* MediaManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaManager.swift; sourceTree = "<group>"; };
 		078EFF872C83512E003312D0 /* PacketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketManager.swift; sourceTree = "<group>"; };
 		078EFF892C83516D003312D0 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		078EFF8B2C8351F8003312D0 /* SimpleTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleTimer.swift; sourceTree = "<group>"; };
-		078EFF8F2C83529E003312D0 /* L2CAPDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L2CAPDelegate.swift; sourceTree = "<group>"; };
-		078EFF912C83532B003312D0 /* BluetoothConnectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothConnectionDelegate.swift; sourceTree = "<group>"; };
 		078EFF932C8356E4003312D0 /* AppRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRepository.swift; sourceTree = "<group>"; };
 		078EFF952C835E11003312D0 /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
 		078EFF972C83999D003312D0 /* ConnectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionViewModel.swift; sourceTree = "<group>"; };
@@ -104,17 +96,19 @@
 		078EFFA62C864392003312D0 /* CallAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallAlert.swift; sourceTree = "<group>"; };
 		078EFFA82C86442E003312D0 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		078EFFAA2C8647F8003312D0 /* CustomWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWindowManager.swift; sourceTree = "<group>"; };
-		07DF435E29B1CB0F009ED75C /* myapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = myapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07BD2A332C90CCBF00DCBF5C /* DropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDown.swift; sourceTree = "<group>"; };
+		07DF435E29B1CB0F009ED75C /* Passover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Passover.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DF436129B1CB0F009ED75C /* myappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappApp.swift; sourceTree = "<group>"; };
 		07DF436329B1CB0F009ED75C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		07DF436529B1CB10009ED75C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		07DF436829B1CB10009ED75C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		07DF436A29B1CB10009ED75C /* myapp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myapp.entitlements; sourceTree = "<group>"; };
-		07DF436F29B1CB10009ED75C /* myappTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = myappTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		07DF436F29B1CB10009ED75C /* PassoverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PassoverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DF437329B1CB10009ED75C /* myappTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappTests.swift; sourceTree = "<group>"; };
-		07DF437929B1CB10009ED75C /* myappUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = myappUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		07DF437929B1CB10009ED75C /* PassoverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PassoverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DF437D29B1CB10009ED75C /* myappUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappUITests.swift; sourceTree = "<group>"; };
 		07DF437F29B1CB10009ED75C /* myappUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		07FAD6AE2C95BBCA00F7F9BA /* BluetoothClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,24 +151,10 @@
 		0762C2522C28438D0077A8B6 /* model */ = {
 			isa = PBXGroup;
 			children = (
+				07FAD6AE2C95BBCA00F7F9BA /* BluetoothClient.swift */,
 				078EFF872C83512E003312D0 /* PacketManager.swift */,
-				0762C2622C2846B30077A8B6 /* RFCommClient.swift */,
-				072ACD142C3AA0960049A1E7 /* temp.swift */,
 			);
 			path = model;
-			sourceTree = "<group>";
-		};
-		078EFF6C2C834E5F003312D0 /* Delegates */ = {
-			isa = PBXGroup;
-			children = (
-				078EFF6D2C834E6E003312D0 /* InquiryDelegate.swift */,
-				078EFF6F2C834EB3003312D0 /* RFCommDelegate.swift */,
-				078EFF712C834EE7003312D0 /* RFCommDelegate2.swift */,
-				078EFF732C834F2A003312D0 /* HandsfreeDelegate.swift */,
-				078EFF8F2C83529E003312D0 /* L2CAPDelegate.swift */,
-				078EFF912C83532B003312D0 /* BluetoothConnectionDelegate.swift */,
-			);
-			path = Delegates;
 			sourceTree = "<group>";
 		};
 		078EFF752C834F62003312D0 /* Tasks */ = {
@@ -190,7 +170,6 @@
 		078EFF7A2C834FD4003312D0 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				078EFF7B2C834FF7003312D0 /* BluetoothViewModel.swift */,
 				078EFF972C83999D003312D0 /* ConnectionViewModel.swift */,
 				078EFF7D2C83506C003312D0 /* HandsfreeViewModel.swift */,
 			);
@@ -200,7 +179,6 @@
 		078EFF7F2C835098003312D0 /* SharedObjects */ = {
 			isa = PBXGroup;
 			children = (
-				078EFF802C8350B4003312D0 /* DeviceControl.swift */,
 				078EFFAA2C8647F8003312D0 /* CustomWindowManager.swift */,
 				078EFF852C835103003312D0 /* MediaManager.swift */,
 				078EFF8B2C8351F8003312D0 /* SimpleTimer.swift */,
@@ -228,6 +206,7 @@
 				078EFFA62C864392003312D0 /* CallAlert.swift */,
 				078EFF9E2C84C159003312D0 /* SavedDevice.swift */,
 				078EFFA02C84C742003312D0 /* ConnectedDevice.swift */,
+				07BD2A332C90CCBF00DCBF5C /* DropDown.swift */,
 				078EFFA22C84CB3B003312D0 /* SignalStregth.swift */,
 				078EFFA42C864317003312D0 /* ActiveCall.swift */,
 			);
@@ -247,9 +226,9 @@
 		07DF435F29B1CB0F009ED75C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				07DF435E29B1CB0F009ED75C /* myapp.app */,
-				07DF436F29B1CB10009ED75C /* myappTests.xctest */,
-				07DF437929B1CB10009ED75C /* myappUITests.xctest */,
+				07DF435E29B1CB0F009ED75C /* Passover.app */,
+				07DF436F29B1CB10009ED75C /* PassoverTests.xctest */,
+				07DF437929B1CB10009ED75C /* PassoverUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -257,17 +236,19 @@
 		07DF436029B1CB0F009ED75C /* myapp */ = {
 			isa = PBXGroup;
 			children = (
+				07FAD6B12C95BC0D00F7F9BA /* extensions */,
 				078EFF992C84AAAF003312D0 /* Views */,
 				078EFF822C8350D3003312D0 /* Utils */,
 				078EFF7F2C835098003312D0 /* SharedObjects */,
 				078EFF7A2C834FD4003312D0 /* ViewModels */,
 				078EFF752C834F62003312D0 /* Tasks */,
-				078EFF6C2C834E5F003312D0 /* Delegates */,
 				0762C2522C28438D0077A8B6 /* model */,
 				0762C2512C2843860077A8B6 /* proto */,
 				075AE4902BDE827F003821FC /* myappRelease.entitlements */,
 				07187D7429B305EB0087EA5E /* Info.plist */,
+				0762700A2C97378200950627 /* Passover.icns */,
 				07DF436129B1CB0F009ED75C /* myappApp.swift */,
+				072EFC5C2C96184800BAF61B /* AppDelegate.swift */,
 				07DF436329B1CB0F009ED75C /* ContentView.swift */,
 				07DF436529B1CB10009ED75C /* Assets.xcassets */,
 				07DF436A29B1CB10009ED75C /* myapp.entitlements */,
@@ -301,12 +282,22 @@
 			path = myappUITests;
 			sourceTree = "<group>";
 		};
+		07FAD6B12C95BC0D00F7F9BA /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				072EFC582C95C2C100BAF61B /* RFCommChannel.swift */,
+				078EFF6D2C834E6E003312D0 /* InquiryDelegate.swift */,
+				078EFF732C834F2A003312D0 /* HandsfreeDelegate.swift */,
+			);
+			path = extensions;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		07DF435D29B1CB0F009ED75C /* myapp */ = {
+		07DF435D29B1CB0F009ED75C /* Passover */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 07DF438329B1CB10009ED75C /* Build configuration list for PBXNativeTarget "myapp" */;
+			buildConfigurationList = 07DF438329B1CB10009ED75C /* Build configuration list for PBXNativeTarget "Passover" */;
 			buildPhases = (
 				07DF435A29B1CB0F009ED75C /* Sources */,
 				07DF435B29B1CB0F009ED75C /* Frameworks */,
@@ -316,7 +307,7 @@
 			);
 			dependencies = (
 			);
-			name = myapp;
+			name = Passover;
 			packageProductDependencies = (
 				0743CF352BE6B72C009D356D /* ISSoundAdditions */,
 				0762C25A2C2846530077A8B6 /* SwiftProtobuf */,
@@ -324,12 +315,12 @@
 				0762C25E2C2846530077A8B6 /* protoc-gen-swift */,
 			);
 			productName = myapp;
-			productReference = 07DF435E29B1CB0F009ED75C /* myapp.app */;
+			productReference = 07DF435E29B1CB0F009ED75C /* Passover.app */;
 			productType = "com.apple.product-type.application";
 		};
-		07DF436E29B1CB10009ED75C /* myappTests */ = {
+		07DF436E29B1CB10009ED75C /* PassoverTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 07DF438629B1CB10009ED75C /* Build configuration list for PBXNativeTarget "myappTests" */;
+			buildConfigurationList = 07DF438629B1CB10009ED75C /* Build configuration list for PBXNativeTarget "PassoverTests" */;
 			buildPhases = (
 				07DF436B29B1CB10009ED75C /* Sources */,
 				07DF436C29B1CB10009ED75C /* Frameworks */,
@@ -340,14 +331,14 @@
 			dependencies = (
 				07DF437129B1CB10009ED75C /* PBXTargetDependency */,
 			);
-			name = myappTests;
+			name = PassoverTests;
 			productName = myappTests;
-			productReference = 07DF436F29B1CB10009ED75C /* myappTests.xctest */;
+			productReference = 07DF436F29B1CB10009ED75C /* PassoverTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		07DF437829B1CB10009ED75C /* myappUITests */ = {
+		07DF437829B1CB10009ED75C /* PassoverUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 07DF438929B1CB10009ED75C /* Build configuration list for PBXNativeTarget "myappUITests" */;
+			buildConfigurationList = 07DF438929B1CB10009ED75C /* Build configuration list for PBXNativeTarget "PassoverUITests" */;
 			buildPhases = (
 				07DF437529B1CB10009ED75C /* Sources */,
 				07DF437629B1CB10009ED75C /* Frameworks */,
@@ -358,9 +349,9 @@
 			dependencies = (
 				07DF437B29B1CB10009ED75C /* PBXTargetDependency */,
 			);
-			name = myappUITests;
+			name = PassoverUITests;
 			productName = myappUITests;
-			productReference = 07DF437929B1CB10009ED75C /* myappUITests.xctest */;
+			productReference = 07DF437929B1CB10009ED75C /* PassoverUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -386,7 +377,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 07DF435929B1CB0F009ED75C /* Build configuration list for PBXProject "myapp" */;
+			buildConfigurationList = 07DF435929B1CB0F009ED75C /* Build configuration list for PBXProject "Passover" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -403,9 +394,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				07DF435D29B1CB0F009ED75C /* myapp */,
-				07DF436E29B1CB10009ED75C /* myappTests */,
-				07DF437829B1CB10009ED75C /* myappUITests */,
+				07DF435D29B1CB0F009ED75C /* Passover */,
+				07DF436E29B1CB10009ED75C /* PassoverTests */,
+				07DF437829B1CB10009ED75C /* PassoverUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -417,6 +408,7 @@
 			files = (
 				07DF436929B1CB10009ED75C /* Preview Assets.xcassets in Resources */,
 				07DF436629B1CB10009ED75C /* Assets.xcassets in Resources */,
+				0762700B2C97378200950627 /* Passover.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,6 +438,9 @@
 				078EFFAB2C8647F8003312D0 /* CustomWindowManager.swift in Sources */,
 				078EFF962C835E11003312D0 /* UserPreferences.swift in Sources */,
 				0762C2582C2844F40077A8B6 /* Message.pb.swift in Sources */,
+				072EFC592C95C2C100BAF61B /* RFCommChannel.swift in Sources */,
+				07FAD6AF2C95BBCA00F7F9BA /* BluetoothClient.swift in Sources */,
+				07BD2A342C90CCBF00DCBF5C /* DropDown.swift in Sources */,
 				078EFFA92C86442E003312D0 /* Common.swift in Sources */,
 				078EFF9B2C84AAC6003312D0 /* Home.swift in Sources */,
 				078EFF862C835103003312D0 /* MediaManager.swift in Sources */,
@@ -453,26 +448,19 @@
 				078EFF882C83512E003312D0 /* PacketManager.swift in Sources */,
 				078EFF8A2C83516D003312D0 /* Utilities.swift in Sources */,
 				076117B72A44297300940D9C /* Constants.swift in Sources */,
-				078EFF902C83529E003312D0 /* L2CAPDelegate.swift in Sources */,
 				078EFF792C834FAD003312D0 /* MediaUpdateHandler.swift in Sources */,
 				078EFF982C83999D003312D0 /* ConnectionViewModel.swift in Sources */,
-				078EFF7C2C834FF7003312D0 /* BluetoothViewModel.swift in Sources */,
 				078EFFA72C864392003312D0 /* CallAlert.swift in Sources */,
+				072EFC5D2C96184900BAF61B /* AppDelegate.swift in Sources */,
 				078EFF842C8350DF003312D0 /* LogConfig.swift in Sources */,
 				078EFF8C2C8351F8003312D0 /* SimpleTimer.swift in Sources */,
 				078EFF742C834F2A003312D0 /* HandsfreeDelegate.swift in Sources */,
-				078EFF702C834EB3003312D0 /* RFCommDelegate.swift in Sources */,
 				078EFFA12C84C742003312D0 /* ConnectedDevice.swift in Sources */,
 				078EFF6E2C834E6E003312D0 /* InquiryDelegate.swift in Sources */,
-				0762C2632C2846B30077A8B6 /* RFCommClient.swift in Sources */,
 				078EFFA32C84CB3B003312D0 /* SignalStregth.swift in Sources */,
-				078EFF812C8350B4003312D0 /* DeviceControl.swift in Sources */,
 				07DF436429B1CB0F009ED75C /* ContentView.swift in Sources */,
 				07DF436229B1CB0F009ED75C /* myappApp.swift in Sources */,
-				078EFF722C834EE7003312D0 /* RFCommDelegate2.swift in Sources */,
 				078EFF9F2C84C159003312D0 /* SavedDevice.swift in Sources */,
-				078EFF922C83532B003312D0 /* BluetoothConnectionDelegate.swift in Sources */,
-				072ACD152C3AA0960049A1E7 /* temp.swift in Sources */,
 				078EFF7E2C83506C003312D0 /* HandsfreeViewModel.swift in Sources */,
 				078EFF942C8356E4003312D0 /* AppRepository.swift in Sources */,
 			);
@@ -500,12 +488,12 @@
 /* Begin PBXTargetDependency section */
 		07DF437129B1CB10009ED75C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 07DF435D29B1CB0F009ED75C /* myapp */;
+			target = 07DF435D29B1CB0F009ED75C /* Passover */;
 			targetProxy = 07DF437029B1CB10009ED75C /* PBXContainerItemProxy */;
 		};
 		07DF437B29B1CB10009ED75C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 07DF435D29B1CB0F009ED75C /* myapp */;
+			target = 07DF435D29B1CB0F009ED75C /* Passover */;
 			targetProxy = 07DF437A29B1CB10009ED75C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -646,7 +634,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = myapp/Info.plist;
-				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Passover-Debug";
+				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Do you allow automation?";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Create a gatt server";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Create gatt server ";
@@ -680,7 +669,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = myapp/Info.plist;
-				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Passover;
+				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Do you allow automation?";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Create a gatt server";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Create gatt server ";
@@ -714,7 +704,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/myapp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/myapp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Passover.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Passover";
 			};
 			name = Debug;
 		};
@@ -735,7 +725,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/myapp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/myapp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Passover.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Passover";
 			};
 			name = Release;
 		};
@@ -780,7 +770,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		07DF435929B1CB0F009ED75C /* Build configuration list for PBXProject "myapp" */ = {
+		07DF435929B1CB0F009ED75C /* Build configuration list for PBXProject "Passover" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				07DF438129B1CB10009ED75C /* Debug */,
@@ -789,7 +779,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		07DF438329B1CB10009ED75C /* Build configuration list for PBXNativeTarget "myapp" */ = {
+		07DF438329B1CB10009ED75C /* Build configuration list for PBXNativeTarget "Passover" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				07DF438429B1CB10009ED75C /* Debug */,
@@ -798,7 +788,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		07DF438629B1CB10009ED75C /* Build configuration list for PBXNativeTarget "myappTests" */ = {
+		07DF438629B1CB10009ED75C /* Build configuration list for PBXNativeTarget "PassoverTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				07DF438729B1CB10009ED75C /* Debug */,
@@ -807,7 +797,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		07DF438929B1CB10009ED75C /* Build configuration list for PBXNativeTarget "myappUITests" */ = {
+		07DF438929B1CB10009ED75C /* Build configuration list for PBXNativeTarget "PassoverUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				07DF438A29B1CB10009ED75C /* Debug */,

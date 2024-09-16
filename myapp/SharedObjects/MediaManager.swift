@@ -122,6 +122,7 @@ class MediaManager{
             return
         }
         
+        
         let imagePacket = BPacket.with {
             $0.type = MessageType.graphics
             $0.graphic = Graphic.with{

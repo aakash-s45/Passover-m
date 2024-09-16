@@ -31,7 +31,6 @@ struct ScanResult: View {
                 .onTapGesture {
                     AppRepository.shared.stopInquiry()
                     AppRepository.shared.select(device: device)
-                    
                 }
             }
             if bluetoothViewModel.is_scanning{

@@ -17,7 +17,7 @@ struct ConnectedDevice: View {
                 if bluetoothViewModel.is_connected{
                     Image(systemName: "ellipsis.message.fill").imageScale(.medium).foregroundColor(.gray)
                 }
-                if bluetoothViewModel.is_hf_connected{
+                if handsFreeDeviceState.is_connected{
                     Image(systemName: "phone.down.waves.left.and.right").imageScale(.medium).foregroundColor(.gray)
                     Spacer()
                     Image(systemName: handsFreeDeviceState.batteryText).imageScale(.medium)
@@ -29,11 +29,14 @@ struct ConnectedDevice: View {
             }.padding(.bottom)
             HStack(alignment: .center){
                 Image(systemName: "candybarphone").imageScale(.large).foregroundColor(.green)
-                Text(bluetoothViewModel.device?.nameOrAddress ?? "Unknown")
+                Text(bluetoothViewModel.deviceName)
                     .font(.title2)
                     .bold()
                 Spacer()
-                Image(systemName: "trash.circle").imageScale(.large).foregroundColor(.gray)
+                Image(systemName: "trash.circle").imageScale(.large).foregroundColor(.gray).onTapGesture {
+                    AppRepository.shared.stop()
+                }
+//                DropDownMenu()
             }
         }
     }

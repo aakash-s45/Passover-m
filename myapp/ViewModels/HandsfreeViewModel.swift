@@ -22,7 +22,6 @@ class HFDState: ObservableObject{
     @Published var batteryText:String = "battery.100percent"
     @Published var elapsedTimeString: String = "00:00:00"
     var call_timer:SimpleTimer? = nil
-    var handsFreeDevice:IOBluetoothHandsFreeDevice? = nil
     
     
     private init(){}
@@ -37,12 +36,7 @@ class HFDState: ObservableObject{
             self.elapsedTimeString = elapsedTimeString
         }
     }
-    func update(handFreeDevice:IOBluetoothHandsFreeDevice?){
-        self.handsFreeDevice = handFreeDevice
-        if handFreeDevice != nil{
-            self.devicename = handFreeDevice!.device.nameOrAddress
-        }
-    }
+
     func update(is_active: Bool){
         if is_active{
             self.call_timer = SimpleTimer.shared
@@ -74,7 +68,6 @@ class HFDState: ObservableObject{
     func update(callSetupMode: Int){
         switch callSetupMode{
         case 0:
-            Logger.connection.debug("Call setup mode idle")
             WindowManager.shared.closeCallAlert(windowName: .CallAlert)
             if !self.is_active{
                 WindowManager.shared.closeCallAlert(windowName: .CallPopUP)

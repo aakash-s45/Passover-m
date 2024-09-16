@@ -20,6 +20,7 @@ class BLEUtils{
     
     static let saveIdentifierAddressKey = "ble.savedidentifiers.address"
     static let saveIdentifierNameKey = "ble.savedidentifiers.name"
+    static let serverName: String = "cBluetoothServer"
 }
 
 class MediaInfo{

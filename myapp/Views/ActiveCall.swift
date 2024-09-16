@@ -39,7 +39,7 @@ struct ActiveCall: View {
                     Image(systemName: getBatteryString(charge: self.hfdState.battery))
                 }
                 Image(systemName: "phone.down.circle.fill").font(.system(size: 20)).foregroundStyle(.red).onTapGesture {
-                    HFDState.shared.handsFreeDevice?.endCall()
+                    AppRepository.shared.bluetoothClient?.hfDevice?.endCall()
                 }.padding(.horizontal)
 
             }

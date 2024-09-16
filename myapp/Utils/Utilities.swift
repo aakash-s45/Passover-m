@@ -46,6 +46,7 @@ func convertTiffToPng(imageData: Data) -> Data? {
         imageTosend = applyBlur(to: imageData, radius: 1.5) ?? imageData
         compressionRatio = 1.0
     }
+
     
     guard let image = NSImage(data: imageTosend) else {
         print("Failed to create NSImage from TIFF data.")
@@ -62,6 +63,12 @@ func convertTiffToPng(imageData: Data) -> Data? {
         return nil
     }
     
+    print(tiffBitmap.debugDescription)
+    guard let newTiffBitmap = cropToSquare(imageRep: tiffBitmap) else{
+        print("Failed to crop NSBitmapImageRep from TIFF data.")
+        return nil
+    }
+    print(newTiffBitmap.debugDescription)
     
 
     
@@ -69,12 +76,39 @@ func convertTiffToPng(imageData: Data) -> Data? {
         NSBitmapImageRep.PropertyKey.compressionFactor: compressionRatio
         ]
     
-    guard let pngData = tiffBitmap.representation(using: .jpeg, properties: properties) else {
+    
+    
+    guard let pngData = newTiffBitmap.representation(using: .jpeg, properties: properties) else {
         print("Failed to convert TIFF image to PNG data.")
         return nil
     }
     
     return pngData
+}
+
+
+func cropToSquare(imageRep: NSBitmapImageRep) -> NSBitmapImageRep? {
+    let originalWidth = imageRep.pixelsWide
+    let originalHeight = imageRep.pixelsHigh
+    let squareSize = min(originalWidth, originalHeight)
+
+    // Calculate the cropping rectangle to center the square
+    let xOffset = (originalWidth - squareSize) / 2
+    let yOffset = (originalHeight - squareSize) / 2
+
+    let croppingRect = NSRect(x: xOffset, y: yOffset, width: squareSize, height: squareSize)
+    
+    guard let cgImage = imageRep.cgImage else {
+        return nil
+    }
+
+    // Create a new CGImage by cropping the original CGImage
+    guard let croppedCgImage = cgImage.cropping(to: croppingRect) else {
+        return nil
+    }
+    
+    // Create a new NSBitmapImageRep from the cropped CGImage
+    return NSBitmapImageRep(cgImage: croppedCgImage)
 }
 
 
