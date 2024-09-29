@@ -8,6 +8,7 @@ extension BluetoothClient: IOBluetoothDeviceInquiryDelegate{
         Logger.connection.debug("Starting Inquiry")
         self.inquiry = IOBluetoothDeviceInquiry(delegate: self)
         self.inquiry?.start()
+        ConnectionViewModel.shared.update(is_scanning: true)
     }
     
     func stopInquiry() {

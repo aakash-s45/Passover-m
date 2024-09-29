@@ -645,7 +645,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = aks.myapp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.aks.Passover;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -669,7 +669,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = myapp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Passover;
+				INFOPLIST_KEY_CFBundleDisplayName = "Passover-Debug";
 				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Do you allow automation?";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Create a gatt server";
@@ -680,7 +680,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = aks.myapp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.aks.Passover;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

@@ -10,7 +10,7 @@ import IOBluetooth
 import os
 
 extension BluetoothClient{
-    func sdpQueryComplete(_ device: IOBluetoothDevice, status: IOReturn) {
+    @objc func sdpQueryComplete(_ device: IOBluetoothDevice, status: IOReturn) {
         if status == kIOReturnSuccess {
             print("SDP query completed successfully for device: \(device.name ?? "Unknown Device")")
             // You can now check services or proceed with the RFCOMM channel
