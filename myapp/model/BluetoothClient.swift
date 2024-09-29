@@ -73,7 +73,7 @@ extension BluetoothClient{
         }
         if hfd.isConnected{
             hfd.disconnect()
-            Logger.connection.warning("Disconnecting")
+            Logger.connection.warning("Disconnecting...")
         }
         else{
             Logger.connection.warning("Not connected to Gateway!")
