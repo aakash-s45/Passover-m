@@ -7,6 +7,7 @@
 
 import Foundation
 import IOBluetooth
+import IOBluetoothUI
 import CoreBluetooth
 import os
 
@@ -16,7 +17,7 @@ class BluetoothClient: NSObject, CBCentralManagerDelegate{
     var isStopped:Bool = false
     
     var centralManager: CBCentralManager?
-    var hfDevice: IOBluetoothHandsFreeDevice?
+    var device: IOBluetoothDevice?
     var backgroundQueue:DispatchQueue
     var rfcommChannel:IOBluetoothRFCOMMChannel?
     var inquiry:IOBluetoothDeviceInquiry?
@@ -31,11 +32,11 @@ class BluetoothClient: NSObject, CBCentralManagerDelegate{
     deinit{Logger.connection.debug("BluetoothClient deinit")}
     
     func start(){
-        guard let hfd = self.hfDevice else{
+        guard let device = self.device else{
             Logger.connection.warning("No Gateway proxy found to connect!")
             return
         }
-        self.connect(to: hfd.device)
+        self.runSDPquery(to: device)
     }
     
     func stop(){
@@ -43,40 +44,37 @@ class BluetoothClient: NSObject, CBCentralManagerDelegate{
         if ConnectionViewModel.shared.is_connected{
             self.attemptCloseRFCOMM(retries: 3)
         }
-        else if HFDState.shared.is_connected{
-            self.disconnect()
-        }
         self.isStopped = true
     }
     
     func update(device: IOBluetoothDevice){
-        self.hfDevice = IOBluetoothHandsFreeDevice(device: device, delegate: self)
+        self.device = device
     }
     
 }
 
 extension BluetoothClient{
     func connect(to device:IOBluetoothDevice){
-        self.runSDPquery(to: device)
-        if device.isHandsFreeAudioGateway{
-            self.hfDevice = IOBluetoothHandsFreeDevice(device: device, delegate: self)
-            self.hfDevice?.connect()
+        let status = self.openRFCOMM(to: device)
+        if status{
+            Logger.connection.info("Connected to \(device.nameOrAddress)")
         }
         else{
-            Logger.connection.error("Device do not support HandsFreeAudioGateway!")
+            Logger.connection.error("Failed to connect to \(device.nameOrAddress)")
         }
     }
+    
     func disconnect(){
-        guard let hfd = self.hfDevice else{
-            Logger.connection.warning("No Gateway proxy found to disconnect!")
+        guard let device = self.device else{
+            Logger.connection.error("No device selected!")
             return
         }
-        if hfd.isConnected{
-            hfd.disconnect()
+        if device.isConnected(){
+            device.closeConnection()
             Logger.connection.warning("Disconnecting...")
         }
         else{
-            Logger.connection.warning("Not connected to Gateway!")
+            Logger.connection.warning("Not connected to device!")
         }
     }
 
@@ -116,6 +114,7 @@ extension BluetoothClient{
             Logger.connection.debug("Saved device address: \(savedDevice.description)")
 //            let device = IOBluetoothDevice(addressString: "98-09-cf-a5-f2-ef")
             if let device = IOBluetoothDevice(addressString: savedDevice[0]){
+                self.stopInquiry()
                 self.update(device: device)
                 self.start()
             }

@@ -49,6 +49,7 @@ class AppRepository{
     func select(device: IOBluetoothDevice){
         userPreference?.update(identifier: device.addressString, name: device.nameOrAddress)
         bluetoothClient?.update(device: device)
+        bluetoothClient?.stopInquiry()
         bluetoothClient?.start()
     }
     

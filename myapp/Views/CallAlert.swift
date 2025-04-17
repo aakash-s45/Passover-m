@@ -22,10 +22,10 @@ struct CallAlert:View {
                 Spacer().frame(width:50)
                 VStack(alignment: .leading){
                     Button("Accept", action: {
-                        AppRepository.shared.bluetoothClient?.hfDevice?.acceptCallOnPhone()
+//                        AppRepository.shared.bluetoothClient?.hfDevice?.acceptCallOnPhone()
                     })
                     Button("Reject", action: {
-                        AppRepository.shared.bluetoothClient?.hfDevice?.endCall()
+//                        AppRepository.shared.bluetoothClient?.hfDevice?.endCall()
                     })
                 }
 

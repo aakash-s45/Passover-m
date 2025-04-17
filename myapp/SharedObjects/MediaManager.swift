@@ -90,7 +90,6 @@ class MediaManager{
             Logger.connection.debug("Publishing message not changed!")
             return
         }
-        
         let mediaDataPacket = BPacket.with {
             $0.type = MessageType.mediadata
             $0.mediaData = MediaData.with({

@@ -14,6 +14,7 @@ extension BluetoothClient{
         if status == kIOReturnSuccess {
             print("SDP query completed successfully for device: \(device.name ?? "Unknown Device")")
             // You can now check services or proceed with the RFCOMM channel
+            self.connect(to: device)
         } else {
             print("SDP query failed with status: \(status)")
             // Handle failure case
@@ -29,10 +30,14 @@ extension BluetoothClient{
             Logger.connection.debug("Failed to start SDP query with status: \(sdpStatus)")
         }
     }
+    
     func openRFCOMM(to device: IOBluetoothDevice)->Bool{
         for service in device.services {
             let serviceRecord = service as! IOBluetoothSDPServiceRecord
             if let name = serviceRecord.getServiceName(){
+                var chid = 0
+                serviceRecord.getRFCOMMChannelID(&chid)
+                Logger.connection.info("\(name) found with channel: \(chid)")
                 if name == BLEUtils.serverName{
                     let status = self.openRFCOMM(to: device, with: serviceRecord)
                     return status
@@ -77,6 +82,7 @@ extension BluetoothClient{
                     let status = device.closeConnection()
                     if !channel.isOpen() {
                         Logger.connection.debug("Connection closed successfully on attempt \(attempt)")
+                        device.closeConnection()
                         break
                     } else {
                         Logger.connection.error("Attempt \(attempt) to close Connection failed: \(status)")
@@ -85,7 +91,6 @@ extension BluetoothClient{
                 }
             }
         }
-        
     }
 
     
