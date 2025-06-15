@@ -9,13 +9,9 @@ import SwiftUI
 
 struct Home: View {
     @EnvironmentObject var bluetoothViewModel:ConnectionViewModel
-    @EnvironmentObject var handsfreeDeviceState:HFDState
     var body: some View {
         if bluetoothViewModel.is_powered_on{
             if bluetoothViewModel.is_connected{
-                ConnectedDevice()
-            }
-            else if(handsfreeDeviceState.is_connected){
                 ConnectedDevice()
             }
             else{

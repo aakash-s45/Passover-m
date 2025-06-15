@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ConnectedDevice: View {
     @EnvironmentObject var bluetoothViewModel:ConnectionViewModel
-    @EnvironmentObject var handsFreeDeviceState:HFDState
     
     var body: some View {
         VStack(alignment: .leading){
@@ -17,15 +16,7 @@ struct ConnectedDevice: View {
                 if bluetoothViewModel.is_connected{
                     Image(systemName: "ellipsis.message.fill").imageScale(.medium).foregroundColor(.gray)
                 }
-                if handsFreeDeviceState.is_connected{
-                    Image(systemName: "phone.down.waves.left.and.right").imageScale(.medium).foregroundColor(.gray)
-                    Spacer()
-                    Image(systemName: handsFreeDeviceState.batteryText).imageScale(.medium)
-                    SignalStrength(active: handsFreeDeviceState.signal, scale: 2.5)
-                }
-                else{
-                    Spacer()
-                }
+                Spacer()
             }.padding(.bottom)
             HStack(alignment: .center){
                 Image(systemName: "candybarphone").imageScale(.large).foregroundColor(.green)
@@ -36,7 +27,6 @@ struct ConnectedDevice: View {
                 Image(systemName: "trash.circle").imageScale(.large).foregroundColor(.gray).onTapGesture {
                     AppRepository.shared.stop()
                 }
-//                DropDownMenu()
             }
         }
     }

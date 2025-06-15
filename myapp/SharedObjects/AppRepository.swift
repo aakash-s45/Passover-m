@@ -56,14 +56,10 @@ class AppRepository{
     func readData(data:Data){
         do{
             let packet = try BPacket(serializedData: data)
-            if packet.type == MessageType.remote{
-                let remoteData = packet.remoteData
-                if remoteData.event == "CMD"{
-                    packetManager?.readCommand(message: remoteData.extraData)
-                }
-                else if remoteData.event == "TASK"{
-                    packetManager?.readNotification(mesage: remoteData.extraData)
-                }
+            if(packet.type == MessageType.clipboard){
+                let clipboardData = packet.clipboard
+                clipboardHandler?.addDataToClipboard(data: clipboardData)
+                Logger.connection.info("Clipboard data received: \(clipboardData.text)")
             }
         }catch let error{
             Logger.connection.error("Failed to read data using \(data) with error \(error)")

@@ -21,6 +21,8 @@ class BluetoothClient: NSObject, CBCentralManagerDelegate{
     var backgroundQueue:DispatchQueue
     var rfcommChannel:IOBluetoothRFCOMMChannel?
     var inquiry:IOBluetoothDeviceInquiry?
+    var incomingDataBuffer = Data()
+    var expectedDataLength: Int?
     
     override init() {
         self.backgroundQueue = DispatchQueue(label: "app.passover.bg", qos: .background)
@@ -50,6 +52,7 @@ class BluetoothClient: NSObject, CBCentralManagerDelegate{
     func update(device: IOBluetoothDevice){
         self.device = device
     }
+    
     
 }
 

@@ -72,24 +72,7 @@ class ConnectionViewModel: ObservableObject{
             self.scanResult.removeAll()
         }
     }
-    
-//    private func startConnection() {
-//        connectionTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
-//            self?.attemptConnection()
-//        }
-//    }
-//    
-//    private func attemptConnection() {
-//        if is_powered_on && !is_connected{
-//            AppRepository.shared.start()
-//        }
-//    }
-//    
-//    func stopConnectionTimer() {
-//        connectionTimer?.invalidate()
-//        connectionTimer = nil
-//    }
-//    
+      
     func connect(to device:IOBluetoothDevice){
         AppRepository.shared.select(device: device)
     }

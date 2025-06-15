@@ -22,10 +22,9 @@ class PacketManager{
             print("data: \(data[0])")
             if(data[0] == "DESTROY"){
                 AppRepository.shared.stop()
-                MediaManager.shared.stop()
             }
             else if(data[0] == "REFRESH" || data[0] == "CONNECT"){
-                MediaManager.shared.reset()
+                
             }
             else if(data[0] == "CONNECTED"){
                 print("Its a read request notification!!")
@@ -61,7 +60,6 @@ class PacketManager{
             }
             else if(event.contains("SEEKM")){
                 if let doubleValue = Double(data[1]) {
-                    MediaRemoteHelper.setElapsedTime(doubleValue)
                 } else {
                     print("Invalid number format")
                 }

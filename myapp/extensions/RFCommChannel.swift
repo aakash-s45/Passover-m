@@ -152,9 +152,10 @@ extension BluetoothClient:IOBluetoothRFCOMMChannelDelegate{
     func rfcommChannelOpenComplete(_ rfcommChannel: IOBluetoothRFCOMMChannel!, status error: IOReturn) {
         if error == kIOReturnSuccess {
             Logger.connection.debug("RFCOMM Channel opened successfully.")
-            MediaRemoteHelper.getNowPlayingInfo()
+//            MediaRemoteHelper.getNowPlayingInfo()
             ConnectionViewModel.shared.update(connected: true)
             ConnectionViewModel.shared.update(deviceName: rfcommChannel.getDevice().nameOrAddress)
+            Logger.connection.info("MTU: \(rfcommChannel.getMTU())")
         } else {
             Logger.connection.error("Failed to open RFCOMM Channel: \(error.description)")
             ConnectionViewModel.shared.update(connected: false)
@@ -171,8 +172,76 @@ extension BluetoothClient:IOBluetoothRFCOMMChannelDelegate{
         Logger.connection.debug("RFCOMM Channel: received data")
         
         let data = Data(bytes: dataPointer, count: Int(dataLength))
-        self.backgroundQueue.async{
-            AppRepository.shared.readData(data: data)
+        self.backgroundQueue.async { [weak self] in
+            guard let self = self else { return }
+
+            self.incomingDataBuffer.append(data)
+            self.processDataBuffer()
+        }
+    }
+
+    private func processDataBuffer() {
+        if expectedDataLength == nil {
+            // need at least 4 bytes to read the length header.
+            guard incomingDataBuffer.count >= 4 else {
+                return // Not enough data to read the length header yet.
+            }
+
+            // Extract the 4-byte header to determine message length.
+            let sizeData = incomingDataBuffer.prefix(4)
+            // Safely extract bytes without alignment issues
+            let bytes = Array(sizeData)
+            guard bytes.count == 4 else {
+                Logger.connection.error("Invalid header size: \(bytes.count)")
+                return
+            }
+            
+            // Manually construct UInt32 from bytes (big-endian order)
+            // Android's ByteBuffer.putInt() writes in big-endian (network byte order)
+            let lengthInBigEndian = (UInt32(bytes[0]) << 24) |
+                                    (UInt32(bytes[1]) << 16) |
+                                    (UInt32(bytes[2]) << 8)  |
+                                    (UInt32(bytes[3]))
+            
+            let length = Int(lengthInBigEndian)
+            guard length > 0 && length <= 10_000_000 else { // 10MB max
+                Logger.connection.error("Received invalid message length: \(length). Protocol error - clearing buffer.")
+                Logger.connection.error("Raw bytes: \(sizeData.map { String(format: "%02x", $0) }.joined(separator: " "))")
+                
+                // Clear buffer and reset state
+                self.incomingDataBuffer.removeAll()
+                self.expectedDataLength = nil
+                return
+            }
+            
+            Logger.connection.info("Expecting new message with length: \(length) bytes.")
+            self.expectedDataLength = length
+            incomingDataBuffer.removeFirst(4)
+        }
+        guard let expectedLength = expectedDataLength else {
+            return
+        }
+        
+        guard incomingDataBuffer.count >= expectedLength else {
+            Logger.connection.debug("Waiting for more data: have \(self.incomingDataBuffer.count), need \(expectedLength)")
+            return
+        }
+
+        let messageChunk = incomingDataBuffer.prefix(expectedLength)
+        let completeMessageData = Data(messageChunk)
+        
+        Logger.connection.info("Complete message of size \(completeMessageData.count) reassembled.")
+        self.backgroundQueue.async {
+            AppRepository.shared.readData(data: completeMessageData)
+        }
+
+        incomingDataBuffer.removeFirst(expectedLength)
+        expectedDataLength = nil
+
+        // Process any remaining data in the buffer
+        if !self.incomingDataBuffer.isEmpty {
+            Logger.connection.debug("Processing remaining \(self.incomingDataBuffer.count) bytes in buffer.")
+            self.processDataBuffer()
         }
     }
     

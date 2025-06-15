@@ -13,11 +13,10 @@ struct myappApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     let bluetoothViewModel = ConnectionViewModel.shared
-    let handsFreeDeviceState = HFDState.shared
     
     var body: some Scene {
         MenuBarExtra("Passover", systemImage: "macbook.and.iphone"){
-            ContentView().environmentObject(bluetoothViewModel).environmentObject(handsFreeDeviceState)
+            ContentView().environmentObject(bluetoothViewModel)
         }.menuBarExtraStyle(.window)
 
     }

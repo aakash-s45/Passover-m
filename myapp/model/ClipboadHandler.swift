@@ -50,16 +50,19 @@ class ClipboardHandler {
         }
     }
 
-    func addDataToClipboard(data: Any) {
+    func addDataToClipboard(data: ClipBoard) {
         isAddingData = true
         pasteboard.clearContents()
-
-        if let imageData = data as? Data, let image = NSImage(data: imageData) {
-            pasteboard.setData(image.tiffRepresentation, forType: .tiff)
-        } else if let textData = data as? String {
-            pasteboard.setString(textData, forType: .string)
+        if(data.origin == "txt"){
+            pasteboard.setString(data.text, forType: .string)
         }
-
+        else if(data.origin == "img"){
+            Logger.connection.info("Got image data")
+//            pasteboard.setData(image.tiffRepresentation, forType: .tiff)
+        }
+        else{
+            return
+        }
         changeCount = pasteboard.changeCount
         isAddingData = false
     }
