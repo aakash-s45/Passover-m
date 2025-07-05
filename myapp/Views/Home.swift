@@ -10,6 +10,16 @@ import SwiftUI
 struct Home: View {
     @EnvironmentObject var bluetoothViewModel:ConnectionViewModel
     var body: some View {
+        VStack {
+                    Button("Start Receiving") {
+                        AppRepository.shared.fileReceiver?.startServer()
+                    }
+                    Button("Stop Server") {
+                        AppRepository.shared.fileReceiver?.stopServer()
+                    }
+                }
+                .padding()
+        
         if bluetoothViewModel.is_powered_on{
             if bluetoothViewModel.is_connected{
                 ConnectedDevice()

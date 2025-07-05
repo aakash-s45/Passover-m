@@ -11,6 +11,7 @@ import os
 
 class AppRepository{
     static let shared = AppRepository()
+    var fileReceiver:FileReceiver?
     var bluetoothClient: BluetoothClient?
     private var clipboardHandler: ClipboardHandler?
     private var packetManager: PacketManager?
@@ -26,12 +27,14 @@ class AppRepository{
         clipboardHandler = ClipboardHandler()
         userPreference = UserPreferences()
         bluetoothClient = BluetoothClient()
+        fileReceiver = FileReceiver()
     }
     
     func stop(){
         bluetoothClient?.stop()
         clipboardHandler = nil
         packetManager = nil
+        fileReceiver = nil
     }
     
     func scan(){
