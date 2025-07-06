@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -28,6 +28,9 @@
 		078EFFA12C84C742003312D0 /* ConnectedDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFFA02C84C742003312D0 /* ConnectedDevice.swift */; };
 		078EFFA92C86442E003312D0 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFFA82C86442E003312D0 /* Common.swift */; };
 		078EFFAB2C8647F8003312D0 /* CustomWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFFAA2C8647F8003312D0 /* CustomWindowManager.swift */; };
+		079F50A92E19A21B00CA0D26 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079F50A82E19A21400CA0D26 /* AppViewModel.swift */; };
+		079F50AB2E19A22600CA0D26 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079F50AA2E19A21F00CA0D26 /* SettingsViewModel.swift */; };
+		079F50B62E1A7E6300CA0D26 /* Home2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079F50B52E1A7E5F00CA0D26 /* Home2.swift */; };
 		07BD2A342C90CCBF00DCBF5C /* DropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BD2A332C90CCBF00DCBF5C /* DropDown.swift */; };
 		07D255F12DFEC23100C07861 /* FileReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D255F02DFEC23100C07861 /* FileReceiver.swift */; };
 		07DF436229B1CB0F009ED75C /* myappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436129B1CB0F009ED75C /* myappApp.swift */; };
@@ -77,6 +80,9 @@
 		078EFFA02C84C742003312D0 /* ConnectedDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedDevice.swift; sourceTree = "<group>"; };
 		078EFFA82C86442E003312D0 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		078EFFAA2C8647F8003312D0 /* CustomWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWindowManager.swift; sourceTree = "<group>"; };
+		079F50A82E19A21400CA0D26 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
+		079F50AA2E19A21F00CA0D26 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		079F50B52E1A7E5F00CA0D26 /* Home2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home2.swift; sourceTree = "<group>"; };
 		07BD2A332C90CCBF00DCBF5C /* DropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDown.swift; sourceTree = "<group>"; };
 		07D255F02DFEC23100C07861 /* FileReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileReceiver.swift; sourceTree = "<group>"; };
 		07DF435E29B1CB0F009ED75C /* Passover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Passover.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,6 +98,11 @@
 		07DF437F29B1CB10009ED75C /* myappUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		07FAD6AE2C95BBCA00F7F9BA /* BluetoothClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		079F509A2E199BA600CA0D26 /* Services */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Services; sourceTree = "<group>"; };
+		079F509B2E19A0D400CA0D26 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		07DF435B29B1CB0F009ED75C /* Frameworks */ = {
@@ -145,6 +156,8 @@
 		078EFF7A2C834FD4003312D0 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				079F50AA2E19A21F00CA0D26 /* SettingsViewModel.swift */,
+				079F50A82E19A21400CA0D26 /* AppViewModel.swift */,
 				078EFF972C83999D003312D0 /* ConnectionViewModel.swift */,
 			);
 			path = ViewModels;
@@ -172,6 +185,7 @@
 		078EFF992C84AAAF003312D0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				079F50B52E1A7E5F00CA0D26 /* Home2.swift */,
 				078EFF9A2C84AAC6003312D0 /* Home.swift */,
 				078EFFA82C86442E003312D0 /* Common.swift */,
 				078EFF9C2C84B6B5003312D0 /* ScanResult.swift */,
@@ -205,6 +219,8 @@
 		07DF436029B1CB0F009ED75C /* myapp */ = {
 			isa = PBXGroup;
 			children = (
+				079F509B2E19A0D400CA0D26 /* Models */,
+				079F509A2E199BA600CA0D26 /* Services */,
 				078EFF992C84AAAF003312D0 /* Views */,
 				078EFF822C8350D3003312D0 /* Utils */,
 				078EFF7F2C835098003312D0 /* SharedObjects */,
@@ -264,6 +280,10 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				079F509A2E199BA600CA0D26 /* Services */,
+				079F509B2E19A0D400CA0D26 /* Models */,
+			);
 			name = Passover;
 			packageProductDependencies = (
 				0743CF352BE6B72C009D356D /* ISSoundAdditions */,
@@ -319,7 +339,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					07DF435D29B1CB0F009ED75C = {
 						CreatedOnToolsVersion = 14.2;
@@ -403,14 +423,17 @@
 				078EFF8A2C83516D003312D0 /* Utilities.swift in Sources */,
 				076117B72A44297300940D9C /* Constants.swift in Sources */,
 				078EFF982C83999D003312D0 /* ConnectionViewModel.swift in Sources */,
+				079F50A92E19A21B00CA0D26 /* AppViewModel.swift in Sources */,
 				072EFC5D2C96184900BAF61B /* AppDelegate.swift in Sources */,
 				078EFF842C8350DF003312D0 /* LogConfig.swift in Sources */,
 				078EFFA12C84C742003312D0 /* ConnectedDevice.swift in Sources */,
+				079F50B62E1A7E6300CA0D26 /* Home2.swift in Sources */,
 				07DF436429B1CB0F009ED75C /* ContentView.swift in Sources */,
 				07DF436229B1CB0F009ED75C /* myappApp.swift in Sources */,
 				07D255F12DFEC23100C07861 /* FileReceiver.swift in Sources */,
 				078EFF9F2C84C159003312D0 /* SavedDevice.swift in Sources */,
 				078EFF942C8356E4003312D0 /* AppRepository.swift in Sources */,
+				079F50AB2E19A22600CA0D26 /* SettingsViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +506,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -546,6 +570,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -578,7 +603,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"myapp/Preview Content\"";
-				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = myapp/Info.plist;
@@ -612,7 +636,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"myapp/Preview Content\"";
-				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -638,13 +661,11 @@
 		07DF438729B1CB10009ED75C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1.0;
@@ -659,13 +680,11 @@
 		07DF438829B1CB10009ED75C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1.0;
@@ -680,12 +699,10 @@
 		07DF438A29B1CB10009ED75C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = aks.myappUITests;
@@ -699,12 +716,10 @@
 		07DF438B29B1CB10009ED75C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = aks.myappUITests;

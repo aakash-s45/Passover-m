@@ -22,12 +22,12 @@ class AppRepository{
     deinit{Logger.connection.debug("repository deinit")}
     
     func start(){
-        Logger.connection.debug("Starting the app from repository")
-        packetManager = PacketManager()
-        clipboardHandler = ClipboardHandler()
-        userPreference = UserPreferences()
-        bluetoothClient = BluetoothClient()
-        fileReceiver = FileReceiver()
+//        Logger.connection.debug("Starting the app from repository")
+//        packetManager = PacketManager()
+//        clipboardHandler = ClipboardHandler()
+//        userPreference = UserPreferences()
+//        bluetoothClient = BluetoothClient()
+//        fileReceiver = FileReceiver()
     }
     
     func stop(){

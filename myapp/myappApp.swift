@@ -12,14 +12,22 @@ import SwiftUI
 struct myappApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    let bluetoothViewModel = ConnectionViewModel.shared
+    
+//    var body: some Scene {
+//        MenuBarExtra("Passover", systemImage: "macbook.and.iphone"){
+//            ContentView().environmentObject(BluetoothManager.shared)
+//        }.menuBarExtraStyle(.window)
+//
+//    }
+    
     
     var body: some Scene {
-        MenuBarExtra("Passover", systemImage: "macbook.and.iphone"){
-            ContentView().environmentObject(bluetoothViewModel)
-        }.menuBarExtraStyle(.window)
-
-    }
+           WindowGroup {
+               // The main view of the app
+               ContentView()
+           }
+           .windowResizability(.contentSize) // Optional: makes the window non-resizable
+       }
 }
 
 

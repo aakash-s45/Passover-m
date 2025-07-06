@@ -10,16 +10,8 @@ import AppKit
 
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-//    var statusBarItem: NSStatusItem!
-    
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("app launched")
-//        print("App launched")
-//        let statusBar = NSStatusBar.system
-//        statusBarItem = statusBar.statusItem(withLength: 16)
-//
-//        let button = statusBarItem.button
-//        button?.image = NSImage(named: "")
     }
     
     func applicationDidBecomeActive(_ notification: Notification) {

@@ -10,32 +10,28 @@ import IOBluetooth
 
 
 struct ScanResult: View {
-    @EnvironmentObject var bluetoothViewModel: ConnectionViewModel
+    @EnvironmentObject var blueManager: BluetoothManager
     
     var body: some View {
         VStack{
-            if bluetoothViewModel.is_scanning{
-                Text("Scanning").font(.headline)
-            }
-            else{
-                Text("Nearby Devices").font(.headline)
-            }
-            List(bluetoothViewModel.scanResult, id:\.addressString) { device in
+            List(blueManager.discoveredPeripherals, id:\.id) { device in
                 HStack{
                     Image(systemName: "circle.filled.iphone.fill").imageScale(.medium)
-                    Text(device.nameOrAddress)
+                    Text(device.name)
                 }
                 .listRowSeparator(.visible, edges: .all)
                 .listRowSeparatorTint(.gray.opacity(0.5), edges: .all)
                 .padding(3)
                 .onTapGesture {
-                    AppRepository.shared.stopInquiry()
-                    AppRepository.shared.select(device: device)
+                    blueManager.connect(to: device)
+                    
+//                    AppRepository.shared.stopInquiry()
+//                    AppRepository.shared.select(device: device)
                 }
             }
-            if bluetoothViewModel.is_scanning{
+            if blueManager.state == .scanning {
                 Button("Stop Scan", action: {
-                    AppRepository.shared.stopInquiry()
+                    blueManager.stopScanning()
                 })
             }
         }

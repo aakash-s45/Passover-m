@@ -10,5 +10,8 @@ extension Logger {
 
     /// All logs related to tracking and analytics.
     static let viewCycle = Logger(subsystem: subsystem, category: "viewCycle")
+    
+    /// A logger for UI-related events.
+    static let ui = Logger(subsystem: subsystem, category: "ui")
 }
 
