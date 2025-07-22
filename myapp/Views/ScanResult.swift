@@ -14,7 +14,7 @@ struct ScanResult: View {
     
     var body: some View {
         VStack{
-            List(blueManager.discoveredPeripherals, id:\.id) { device in
+            List(blueManager.pairedDevices, id:\.id) { device in
                 HStack{
                     Image(systemName: "circle.filled.iphone.fill").imageScale(.medium)
                     Text(device.name)
@@ -24,15 +24,7 @@ struct ScanResult: View {
                 .padding(3)
                 .onTapGesture {
                     blueManager.connect(to: device)
-                    
-//                    AppRepository.shared.stopInquiry()
-//                    AppRepository.shared.select(device: device)
                 }
-            }
-            if blueManager.state == .scanning {
-                Button("Stop Scan", action: {
-                    blueManager.stopScanning()
-                })
             }
         }
     }

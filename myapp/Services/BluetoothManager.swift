@@ -23,7 +23,7 @@ struct Peripheral: Identifiable, Equatable {
 
 enum BluetoothConnectionState: Equatable {
     case idle
-    case scanning
+    case saved
     case connecting(Peripheral)
     case connected(Peripheral)
     case powerOff
@@ -33,9 +33,10 @@ enum BluetoothConnectionState: Equatable {
 
 final class BluetoothManager: NSObject, ObservableObject {
     static let shared = BluetoothManager()
+    var savedDevice: Peripheral?
 
     // MARK: - Published Properties for UI
-    @Published var discoveredPeripherals: [Peripheral] = []
+    @Published var pairedDevices: [Peripheral] = []
     @Published var state: BluetoothConnectionState = .idle
     @Published var stateInfo: String = "Initializing..."
     @Published var isBluetoothPoweredOn: Bool = false
@@ -43,8 +44,7 @@ final class BluetoothManager: NSObject, ObservableObject {
     // MARK: - Private Properties
     private var centralManager: CBCentralManager!
     private var rfcommChannel: IOBluetoothRFCOMMChannel?
-    private var inquiry: IOBluetoothDeviceInquiry?
-    private let bluetoothQueue = DispatchQueue(label: "com.yourapp.bluetooth.queue", qos: .userInitiated)
+    private let bluetoothQueue = DispatchQueue(label: "com.passover.bluetooth.queue", qos: .userInitiated)
     private let userDefaultsDeviceAddressKey = "savedBluetoothDeviceAddress"
 
     // MARK: - Lifecycle
@@ -52,61 +52,50 @@ final class BluetoothManager: NSObject, ObservableObject {
         super.init()
         centralManager = CBCentralManager(delegate: self, queue: bluetoothQueue)
         setupSleepWakeNotifications()
+        if let address = getSavedDeviceAddress(), let device = IOBluetoothDevice(addressString: address) {
+            let peripheral = Peripheral(from: device)
+            self.savedDevice = peripheral
+        }
     }
 
     deinit {
         NSWorkspace.shared.notificationCenter.removeObserver(self)
-        stopScanning()
+        pairedDevices.removeAll()
         disconnect()
     }
 
     // MARK: - Public API
     
-    /// Starts scanning for nearby Bluetooth devices.
-    func startScanning() {
+    /// Get paired devices
+    func getPairedDevices() {
         bluetoothQueue.async { [weak self] in
             guard let self = self, self.centralManager.state == .poweredOn else { return }
             
-            // Prevent starting a new scan if one is already in progress
-            guard self.inquiry == nil else {
-                Logger.connection.debug("Inquiry is already active.")
-                return
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.pairedDevices.removeAll()
+                self.updateState(.idle, info: "Paired Devices")
+                for device in IOBluetoothDevice.pairedDevices() {
+                    let peripheral = Peripheral(from: device as! IOBluetoothDevice)
+                    if !(self.pairedDevices.contains(peripheral)) {
+                        self.pairedDevices.append(peripheral)
+                    }
+                }
             }
-            
-            Logger.connection.debug("Starting Scan...")
-            DispatchQueue.main.async {
-                self.discoveredPeripherals.removeAll()
-                self.updateState(.scanning, info: "Scanning for devices...")
-            }
-
-            self.inquiry = IOBluetoothDeviceInquiry(delegate: self)
-            self.inquiry?.updateNewDeviceNames = true
-            self.inquiry?.start()
         }
     }
     
-    /// Stops the ongoing device scan.
-    func stopScanning() {
-        bluetoothQueue.async { [weak self] in
-            guard let self = self, self.inquiry != nil else { return }
-            self.inquiry?.stop()
-            self.inquiry = nil
-            Logger.connection.debug("Scan stopped.")
-            if self.state == .scanning {
-                self.updateState(.idle, info: "Scan stopped.")
-            }
-        }
-    }
 
     /// Initiates a connection to a given peripheral.
     func connect(to peripheral: Peripheral) {
         bluetoothQueue.async { [weak self] in
             guard let self = self else { return }
-            self.stopScanning()
-            self.updateState(.connecting(peripheral), info: "Connecting to \(peripheral.name)...")
+            self.saveDeviceAddress(peripheral.id)
             
             // The first step is ALWAYS to run an SDP query.
             self.runSDPQuery(for: peripheral.device)
+            Logger.connection.info("connecting to \(peripheral.id)")
+//            self.connectToRfcommChannel(on: IOBluetoothDevice(addressString: "98-09-cf-a5-f2-ef"))
         }
     }
 
@@ -117,18 +106,20 @@ final class BluetoothManager: NSObject, ObservableObject {
             
             if let channel = self.rfcommChannel, channel.isOpen() {
                 channel.close()
+//                while channel.isOpen(){
+//                    channel.close()
+//                    Logger.connection.info("con: \(channel.isOpen())")
+//                }
                 self.rfcommChannel = nil
             }
             
+            
             if case .connected(let peripheral) = self.state {
-                if peripheral.device.isConnected() {
-                    peripheral.device.closeConnection()
-                }
+                let device = peripheral.device
+                device.closeConnection()
             }
             
-            // Clear cached device if user explicitly disconnects
             self.clearSavedDeviceAddress()
-            self.updateState(.idle, info: "Disconnected")
         }
     }
     
@@ -160,10 +151,12 @@ final class BluetoothManager: NSObject, ObservableObject {
         if let address = getSavedDeviceAddress(), let device = IOBluetoothDevice(addressString: address) {
             Logger.connection.info("Found saved device: \(device.nameOrAddress ?? address). Attempting to connect.")
             let peripheral = Peripheral(from: device)
+            self.savedDevice = peripheral
             self.connect(to: peripheral)
-        } else {
-            Logger.connection.info("No saved device found. Starting scan.")
-            self.startScanning()
+        }
+        else {
+            Logger.connection.info("No saved device found. Getting paired devices.")
+            self.getPairedDevices()
         }
     }
 
@@ -235,8 +228,9 @@ final class BluetoothManager: NSObject, ObservableObject {
         return UserDefaults.standard.string(forKey: userDefaultsDeviceAddressKey)
     }
     
-    private func clearSavedDeviceAddress() {
+    func clearSavedDeviceAddress() {
         UserDefaults.standard.removeObject(forKey: userDefaultsDeviceAddressKey)
+        savedDevice = nil
         Logger.connection.info("Cleared saved device address.")
     }
     
@@ -273,30 +267,11 @@ extension BluetoothManager: CBCentralManagerDelegate {
                 self.initiateConnectionProcess()
             case .poweredOff:
                 self.updateState(.powerOff, info: "Please turn on Bluetooth")
-                DispatchQueue.main.async { self.discoveredPeripherals.removeAll() }
+                DispatchQueue.main.async { self.pairedDevices.removeAll() }
             default:
                 self.updateState(.powerOff, info: "Bluetooth not available")
-                DispatchQueue.main.async { self.discoveredPeripherals.removeAll() }
+                DispatchQueue.main.async { self.pairedDevices.removeAll() }
             }
-        }
-    }
-}
-
-// MARK: - IOBluetoothDeviceInquiryDelegate
-extension BluetoothManager: IOBluetoothDeviceInquiryDelegate {
-    func deviceInquiryDeviceFound(_ sender: IOBluetoothDeviceInquiry!, device: IOBluetoothDevice!) {
-        let newPeripheral = Peripheral(from: device)
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self, !self.discoveredPeripherals.contains(newPeripheral) else { return }
-            Logger.connection.debug("Found device: \(newPeripheral.name) (\(newPeripheral.id))")
-            self.discoveredPeripherals.append(newPeripheral)
-        }
-    }
-
-    func deviceInquiryComplete(_ sender: IOBluetoothDeviceInquiry!, error: IOReturn, aborted: Bool) {
-        Logger.connection.info("Inquiry complete. Aborted: \(aborted), Error: \(error)")
-        if self.state == .scanning {
-             self.updateState(.idle, info: "Scan finished.")
         }
     }
 }
@@ -331,8 +306,6 @@ extension BluetoothManager: IOBluetoothRFCOMMChannelDelegate {
                 Logger.connection.info("✅ RFCOMM Channel Opened Successfully!")
                 let peripheral = Peripheral(from: rfcommChannel.getDevice())
                 self.updateState(.connected(peripheral), info: "Connected to \(peripheral.name)")
-                // Cache the address upon successful connection
-                self.saveDeviceAddress(peripheral.id)
             } else {
                 Logger.connection.error("RFCOMM open failed. Error: \(error)")
                 self.updateState(.idle, info: "Connection failed.")
@@ -346,6 +319,7 @@ extension BluetoothManager: IOBluetoothRFCOMMChannelDelegate {
         if case .connected = self.state {
             self.updateState(.idle, info: "Disconnected")
         }
+        initiateConnectionProcess()
     }
 
     func rfcommChannelData(_ rfcommChannel: IOBluetoothRFCOMMChannel!, data dataPointer: UnsafeMutableRawPointer!, length dataLength: Int) {

@@ -1,6 +1,15 @@
 {
-  "originHash" : "e2f674ce6c8ad2880e7ae6ff3417c8f333ff8716d5316c88bf6a53cb7c26ab29",
+  "originHash" : "efc779f5d495a477fbd38c38fecb119b833432d36dc1e0a75e570b8e0392f609",
   "pins" : [
+    {
+      "identity" : "bluetooth",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/PureSwift/Bluetooth.git",
+      "state" : {
+        "revision" : "52f228b819e8ef920e4232cc37c9a84ffbbc5707",
+        "version" : "7.2.3"
+      }
+    },
     {
       "identity" : "issoundadditions",
       "kind" : "remoteSourceControl",
@@ -15,8 +24,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf.git",
       "state" : {
-        "revision" : "9f0c76544701845ad98716f3f6a774a892152bcb",
-        "version" : "1.26.0"
+        "revision" : "102a647b573f60f73afdce5613a51d71349fe507",
+        "version" : "1.30.0"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "state" : {
+        "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
+        "version" : "601.0.1"
       }
     }
   ],

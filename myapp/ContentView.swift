@@ -34,39 +34,141 @@ import OSLog
 
 struct ContentView: View {
     // Observe the shared BluetoothManager instance
-    @ObservedObject private var btManager = BluetoothManager.shared
+    @EnvironmentObject var btManager:BluetoothManager
+    @State private var showingPreferences = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            // MARK: - Header
-            HeaderView(
-                state: btManager.state,
-                stateInfo: btManager.stateInfo,
-                isPoweredOn: btManager.isBluetoothPoweredOn
-            )
-
-            
-
-            // MARK: - Main Content
-            if btManager.isBluetoothPoweredOn {
-                switch btManager.state {
-                case .connected(let peripheral):
-                    ConnectedView(peripheral: peripheral)
-                
-                case .scanning, .connecting, .idle:
-                    DeviceListView()
-                    
-                case .powerOff:
-                     // This case is handled by the parent `if`
-                    EmptyView()
+        VStack{
+            Text(btManager.stateInfo).padding().font(.title)
+            if case .idle = btManager.state {
+                if btManager.savedDevice == nil{
+                    ScanResult()
                 }
-            } else {
-                PowerOffView()
             }
         }
-        .frame(minWidth: 350, minHeight: 450)
+        HStack{
+            if case .connected(_) = btManager.state {
+                Image(systemName: "poweroff")
+                    .imageScale(.large)
+                    .foregroundColor(.white)
+                    .onTapGesture {
+                        btManager.disconnect()
+                    }
+            }
+            if btManager.savedDevice != nil {
+                Image(systemName: "trash")
+                    .imageScale(.large)
+                    .foregroundColor(.white)
+                    .onTapGesture {
+                        btManager.clearSavedDeviceAddress()
+                    }
+            }
+            Spacer()
+            Image(systemName: "gear").imageScale(.large).foregroundColor(.white).onTapGesture {
+                showingPreferences = true
+            }
+        }
+        .padding()
+        .frame(width: 250)
+        .sheet(isPresented: $showingPreferences) {
+            Text("Yo man")
+        }
+        
     }
 }
+
+
+
+
+//struct ContentView: View {
+//    @EnvironmentObject var mediaManager: MediaManager
+//    @State private var showingPreferences = false
+//    
+//    var body: some View {
+//        VStack {
+//            // Status information in menu bar popover
+//                Text("Media Status")
+//                    .font(.headline)
+//            HStack{
+//                Text("\(mediaManager.nowPlaying)")
+//                    .font(.subheadline)
+//                    .padding(.top, 2)
+//                if(mediaManager.apiStatus){
+//                    Image(systemName: "checkmark.circle.fill")
+//                }
+//            }
+//            
+//            Divider()
+//                .padding(.vertical, 8)
+//            
+//            // Menu buttons
+//            Button("Preferences...") {
+//                // Close the popover before showing preferences
+//                if let popover = NSApplication.shared.delegate as? AppDelegate {
+//                    popover.closePopover(nil)
+//                }
+//                
+//                // Small delay before showing preferences
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                    showingPreferences = true
+//                }
+//            }
+//            .buttonStyle(.plain)
+//            .padding(.vertical, 4)
+//            .frame(maxWidth: .infinity, alignment: .leading)
+//            
+//            Button("Quit") {
+//                NSApplication.shared.terminate(nil)
+//            }
+//            .buttonStyle(.plain)
+//            .padding(.vertical, 4)
+//            .frame(maxWidth: .infinity, alignment: .leading)
+//        }
+//        .padding()
+//        .frame(width: 250)
+//        .sheet(isPresented: $showingPreferences) {
+//            PreferencesWindow()
+//                .frame(minWidth: 450, minHeight: 350)
+//        }
+//    }
+//}
+
+
+//struct ContentView: View {
+//    // Observe the shared BluetoothManager instance
+//    @ObservedObject private var btManager = BluetoothManager.shared
+//
+//    var body: some View {
+//        VStack(spacing: 0) {
+//            // MARK: - Header
+//            HeaderView(
+//                state: btManager.state,
+//                stateInfo: btManager.stateInfo,
+//                isPoweredOn: btManager.isBluetoothPoweredOn
+//            )
+//
+//            
+//
+//            // MARK: - Main Content
+//            if btManager.isBluetoothPoweredOn {
+//                switch btManager.state {
+//                case .connected(let peripheral):
+//                    ConnectedView(peripheral: peripheral)
+//                
+//                case .scanning, .connecting, .idle:
+//                    DeviceListView()
+//                    
+//                case .powerOff:
+//                     // This case is handled by the parent `if`
+//                    EmptyView()
+//                }
+//            } else {
+//                PowerOffView()
+//            }
+//        }
+//        .frame(minWidth: 350, minHeight: 450)
+//    }
+//}
 
 
 // MARK: - Subviews
@@ -97,7 +199,7 @@ private struct HeaderView: View {
         guard isPoweredOn else { return .gray }
         
         switch state {
-        case .idle, .scanning:
+        case .idle, .saved:
             return .blue
         case .connecting:
             return .orange
@@ -110,11 +212,11 @@ private struct HeaderView: View {
 }
 
 private struct DeviceListView: View {
-    @ObservedObject private var btManager = BluetoothManager.shared
+    @EnvironmentObject var btManager:BluetoothManager
 
     var body: some View {
         VStack {
-            List(btManager.discoveredPeripherals) { peripheral in
+            List(btManager.pairedDevices) { peripheral in
                 Button(action: {
                     Logger.ui.info("Connect button tapped for \(peripheral.name)")
                     btManager.connect(to: peripheral)
@@ -127,23 +229,10 @@ private struct DeviceListView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                .buttonStyle(.plain) // Use plain style to make the whole row clickable
+                .buttonStyle(.plain)
             }
             
             Spacer()
-            
-            if btManager.state == .scanning {
-                Button("Stop Scanning") {
-                    btManager.stopScanning()
-                }
-                .padding()
-            } else {
-                Button("Scan for Devices") {
-                    btManager.startScanning()
-                }
-                .keyboardShortcut("r", modifiers: .command)
-                .padding()
-            }
         }
     }
 }

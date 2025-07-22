@@ -8,6 +8,8 @@
 import Foundation
 import CoreBluetooth
 
+let L2CAP_SERVICE_UUID = CBUUID(string: "00001101-0000-1000-8000-00805F9B34FB")
+
 class BLEUtils{
     static let serviceID = CBUUID(string: "0000b81d-0000-1000-8000-00805f9b34fb")
     static let serviceID1 = CBUUID(string: "15006156-c8fa-4ae8-9c73-2ad4c2d1a850")
