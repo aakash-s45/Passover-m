@@ -28,6 +28,7 @@ enum MessageType: SwiftProtobuf.Enum {
   case metadata // = 3
   case notification // = 4
   case remote // = 5
+  case transportmanager // = 6
   case UNRECOGNIZED(Int)
 
   init() {
@@ -42,6 +43,7 @@ enum MessageType: SwiftProtobuf.Enum {
     case 3: self = .metadata
     case 4: self = .notification
     case 5: self = .remote
+    case 6: self = .transportmanager
     default: self = .UNRECOGNIZED(rawValue)
     }
   }
@@ -54,6 +56,7 @@ enum MessageType: SwiftProtobuf.Enum {
     case .metadata: return 3
     case .notification: return 4
     case .remote: return 5
+    case .transportmanager: return 6
     case .UNRECOGNIZED(let i): return i
     }
   }
@@ -71,6 +74,7 @@ extension MessageType: CaseIterable {
     .metadata,
     .notification,
     .remote,
+    .transportmanager,
   ]
 }
 
@@ -115,11 +119,30 @@ struct MetaData {
 
   var type: String = String()
 
-  var extraData: Data = Data()
+  var created: SwiftProtobuf.Google_Protobuf_Timestamp {
+    get {return _created ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
+    set {_created = newValue}
+  }
+  /// Returns true if `created` has been explicitly set.
+  var hasCreated: Bool {return self._created != nil}
+  /// Clears the value of `created`. Subsequent reads from it will return its default value.
+  mutating func clearCreated() {self._created = nil}
+
+  var modified: SwiftProtobuf.Google_Protobuf_Timestamp {
+    get {return _modified ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
+    set {_modified = newValue}
+  }
+  /// Returns true if `modified` has been explicitly set.
+  var hasModified: Bool {return self._modified != nil}
+  /// Clears the value of `modified`. Subsequent reads from it will return its default value.
+  mutating func clearModified() {self._modified = nil}
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
+
+  fileprivate var _created: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
+  fileprivate var _modified: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
 }
 
 struct MediaData {
@@ -193,6 +216,35 @@ struct RemoteData {
   init() {}
 }
 
+struct TransportManager {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var id: String = String()
+
+  var filename: String = String()
+
+  var metadata: MetaData {
+    get {return _metadata ?? MetaData()}
+    set {_metadata = newValue}
+  }
+  /// Returns true if `metadata` has been explicitly set.
+  var hasMetadata: Bool {return self._metadata != nil}
+  /// Clears the value of `metadata`. Subsequent reads from it will return its default value.
+  mutating func clearMetadata() {self._metadata = nil}
+
+  var fileURL: String = String()
+
+  var isWifiTransfer: Bool = false
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _metadata: MetaData? = nil
+}
+
 struct BPacket {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -250,6 +302,14 @@ struct BPacket {
     set {data = .metadata(newValue)}
   }
 
+  var transportManager: TransportManager {
+    get {
+      if case .transportManager(let v)? = data {return v}
+      return TransportManager()
+    }
+    set {data = .transportManager(newValue)}
+  }
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   enum OneOf_Data: Equatable {
@@ -259,6 +319,7 @@ struct BPacket {
     case notificationData(NotificationData)
     case remoteData(RemoteData)
     case metadata(MetaData)
+    case transportManager(TransportManager)
 
   #if !swift(>=4.1)
     static func ==(lhs: BPacket.OneOf_Data, rhs: BPacket.OneOf_Data) -> Bool {
@@ -290,6 +351,10 @@ struct BPacket {
         guard case .metadata(let l) = lhs, case .metadata(let r) = rhs else { preconditionFailure() }
         return l == r
       }()
+      case (.transportManager, .transportManager): return {
+        guard case .transportManager(let l) = lhs, case .transportManager(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
       default: return false
       }
     }
@@ -307,6 +372,7 @@ extension MetaData: @unchecked Sendable {}
 extension MediaData: @unchecked Sendable {}
 extension NotificationData: @unchecked Sendable {}
 extension RemoteData: @unchecked Sendable {}
+extension TransportManager: @unchecked Sendable {}
 extension BPacket: @unchecked Sendable {}
 extension BPacket.OneOf_Data: @unchecked Sendable {}
 #endif  // swift(>=5.5) && canImport(_Concurrency)
@@ -321,6 +387,7 @@ extension MessageType: SwiftProtobuf._ProtoNameProviding {
     3: .same(proto: "METADATA"),
     4: .same(proto: "NOTIFICATION"),
     5: .same(proto: "REMOTE"),
+    6: .same(proto: "TRANSPORTMANAGER"),
   ]
 }
 
@@ -411,7 +478,8 @@ extension MetaData: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationB
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "size"),
     2: .same(proto: "type"),
-    3: .same(proto: "extraData"),
+    3: .same(proto: "created"),
+    4: .same(proto: "modified"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -422,29 +490,38 @@ extension MetaData: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationB
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularInt32Field(value: &self.size) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.type) }()
-      case 3: try { try decoder.decodeSingularBytesField(value: &self.extraData) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._created) }()
+      case 4: try { try decoder.decodeSingularMessageField(value: &self._modified) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if self.size != 0 {
       try visitor.visitSingularInt32Field(value: self.size, fieldNumber: 1)
     }
     if !self.type.isEmpty {
       try visitor.visitSingularStringField(value: self.type, fieldNumber: 2)
     }
-    if !self.extraData.isEmpty {
-      try visitor.visitSingularBytesField(value: self.extraData, fieldNumber: 3)
-    }
+    try { if let v = self._created {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    } }()
+    try { if let v = self._modified {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: MetaData, rhs: MetaData) -> Bool {
     if lhs.size != rhs.size {return false}
     if lhs.type != rhs.type {return false}
-    if lhs.extraData != rhs.extraData {return false}
+    if lhs._created != rhs._created {return false}
+    if lhs._modified != rhs._modified {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -628,6 +705,66 @@ extension RemoteData: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
   }
 }
 
+extension TransportManager: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = "TransportManager"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "id"),
+    2: .same(proto: "filename"),
+    3: .same(proto: "metadata"),
+    4: .same(proto: "fileURL"),
+    5: .same(proto: "isWifiTransfer"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.filename) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._metadata) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self.fileURL) }()
+      case 5: try { try decoder.decodeSingularBoolField(value: &self.isWifiTransfer) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.id.isEmpty {
+      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
+    }
+    if !self.filename.isEmpty {
+      try visitor.visitSingularStringField(value: self.filename, fieldNumber: 2)
+    }
+    try { if let v = self._metadata {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    } }()
+    if !self.fileURL.isEmpty {
+      try visitor.visitSingularStringField(value: self.fileURL, fieldNumber: 4)
+    }
+    if self.isWifiTransfer != false {
+      try visitor.visitSingularBoolField(value: self.isWifiTransfer, fieldNumber: 5)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: TransportManager, rhs: TransportManager) -> Bool {
+    if lhs.id != rhs.id {return false}
+    if lhs.filename != rhs.filename {return false}
+    if lhs._metadata != rhs._metadata {return false}
+    if lhs.fileURL != rhs.fileURL {return false}
+    if lhs.isWifiTransfer != rhs.isWifiTransfer {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension BPacket: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = "BPacket"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
@@ -638,6 +775,7 @@ extension BPacket: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
     5: .same(proto: "notificationData"),
     6: .same(proto: "remoteData"),
     7: .same(proto: "metadata"),
+    8: .same(proto: "transportManager"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -725,6 +863,19 @@ extension BPacket: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
           self.data = .metadata(v)
         }
       }()
+      case 8: try {
+        var v: TransportManager?
+        var hadOneofValue = false
+        if let current = self.data {
+          hadOneofValue = true
+          if case .transportManager(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.data = .transportManager(v)
+        }
+      }()
       default: break
       }
     }
@@ -762,6 +913,10 @@ extension BPacket: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
     case .metadata?: try {
       guard case .metadata(let v)? = self.data else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
+    }()
+    case .transportManager?: try {
+      guard case .transportManager(let v)? = self.data else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
     }()
     case nil: break
     }

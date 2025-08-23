@@ -21,7 +21,7 @@ class PacketManager{
         if !data.isEmpty{
             print("data: \(data[0])")
             if(data[0] == "DESTROY"){
-                AppRepository.shared.stop()
+//                AppRepository.shared.stop()
             }
             else if(data[0] == "REFRESH" || data[0] == "CONNECT"){
                 
@@ -59,7 +59,7 @@ class PacketManager{
                 Sound.output.decreaseVolume(by: 0.0625)
             }
             else if(event.contains("SEEKM")){
-                if let doubleValue = Double(data[1]) {
+                if Double(data[1]) != nil {
                 } else {
                     print("Invalid number format")
                 }

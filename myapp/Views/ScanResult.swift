@@ -6,27 +6,29 @@
 //
 
 import SwiftUI
-import IOBluetooth
-
+import CoreBluetooth
 
 struct ScanResult: View {
-    @EnvironmentObject var blueManager: BluetoothManager
-    
+    @EnvironmentObject var bluetoothClient: BluetoothL2capClient
+
+    private var discoveredPeripheralsList: [(peripheral: CBPeripheral, psm: CBL2CAPPSM)] {
+        bluetoothClient.discoveredPeripherals.map { ($0.key, $0.value) }
+    }
+
     var body: some View {
-        VStack{
-            List(blueManager.pairedDevices, id:\.id) { device in
-                HStack{
-                    Image(systemName: "circle.filled.iphone.fill").imageScale(.medium)
-                    Text(device.name)
-                }
-                .listRowSeparator(.visible, edges: .all)
-                .listRowSeparatorTint(.gray.opacity(0.5), edges: .all)
-                .padding(3)
-                .onTapGesture {
-                    blueManager.connect(to: device)
-                }
+        List(discoveredPeripheralsList, id: \.peripheral.identifier) { item in
+            HStack {
+                Image(systemName: "circle.filled.iphone.fill").imageScale(.medium)
+                Text(item.peripheral.name ?? "Unknown")
+            }
+            .listRowSeparator(.visible, edges: .all)
+            .listRowSeparatorTint(.gray.opacity(0.5), edges: .all)
+            .padding(3)
+            .onTapGesture {
+                bluetoothClient.connect(to: item.peripheral, using: item.psm)
             }
         }
     }
 }
+
 
