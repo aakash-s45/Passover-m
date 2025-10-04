@@ -19,7 +19,7 @@ struct Home: View{
                 ScanResult()
                 if bluetoothClient.status != "Scanning..."{
                     Button("Scan"){
-                        bluetoothClient.startScan()
+                        _ = bluetoothClient.startScan()
                     }
                 }
                 

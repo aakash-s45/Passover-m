@@ -36,6 +36,7 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
     
     private var streamThread: Thread!
     private var isThreadRunning = false
+    private var shouldRestartScan = false
 
     override init() {
         self.userPreferences = UserPreferences()
@@ -67,18 +68,31 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if central.state == .poweredOn {
-            status = "Ready to Scan"
+            DispatchQueue.main.async {[weak self] in
+                self?.status = "Ready to Scan"
+            }
+            if self.shouldRestartScan{
+                _ = self.startScan()
+            }
         } else {
-            status = "Bluetooth is not available"
+            DispatchQueue.main.async {[weak self] in
+                self?.status = "Bluetooth is not available"
+            }
         }
     }
 
-    func startScan() {
+    func startScan()->Bool {
+        guard centralManager.state == .poweredOn else {
+            Logger.connection.info("Cannot Scan – Bluetooth not powered on")
+            return false
+        }
         Logger.connection.info("Starting scan")
-        guard centralManager.state == .poweredOn else { return }
-        discoveredPeripherals.removeAll()
-        status = "Scanning..."
+        DispatchQueue.main.async { [weak self] in
+            self?.discoveredPeripherals.removeAll()
+            self?.status = "Scanning..."
+        }
         centralManager.scanForPeripherals(withServices: [L2CAP_SERVICE_UUID], options: nil)
+        return true
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -88,16 +102,17 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
             
             // PSM is a 16-bit unsigned integer (UInt16) sent in little-endian format
             let parsedPSM = psmData.withUnsafeBytes { $0.load(as: UInt16.self) }
-            discoveredPeripherals[peripheral] = parsedPSM
             
             if peripheral.identifier.uuidString == userPreferences.get() ?? "" {
                 Logger.connection.info("Connecting to saved device")
                 DispatchQueue.main.async { [weak self] in
+                    self?.discoveredPeripherals[peripheral] = parsedPSM
                     self?.connect(to: peripheral, using: parsedPSM, saveUUID: false)
                 }
             }
         }
     }
+    
     
     func connect(to peripheral: CBPeripheral, using psm: UInt16, saveUUID: Bool = true){
         self.psm = psm
@@ -110,9 +125,9 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
         targetPeripheral = peripheral
         DispatchQueue.main.async { [weak self] in
             self?.deviceName = peripheral.name ?? "Unknown"
+            self?.discoveredPeripherals.removeAll()
         }
         
-        discoveredPeripherals.removeAll()
         if saveUUID {
             userPreferences.update(identifier: peripheral.identifier.uuidString)
         }
@@ -133,25 +148,33 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
             }
             peripheral.openL2CAPChannel(psm)
         } else {
-            status = "Error: PSM not found."
+            DispatchQueue.main.async { [weak self] in
+                self?.status = "Error: PSM not found."
+            }
         }
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: (any Error)?) {
-        self.isConnected = false
+        DispatchQueue.main.async {
+            self.isConnected = false
+        }
         Logger.connection.info("Disconnected from \(peripheral.name ?? "Unknown")")
     }
     
   
     func peripheral(_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?) {
         if let error = error {
-            self.isConnected = false
-            status = "L2CAP channel error: \(error.localizedDescription)"
+            DispatchQueue.main.async { [weak self] in
+                self?.isConnected = false
+                self?.status = "L2CAP channel error: \(error.localizedDescription)"
+            }
             return
         }
         guard let channel = channel else {
-            self.isConnected = false
-            status = "L2CAP channel is nil"
+            DispatchQueue.main.async { [weak self] in
+                self?.isConnected = false
+                self?.status = "L2CAP channel is nil"
+            }
             return
         }
         
@@ -175,7 +198,7 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
         }
     }
     
-    private func processSendQueue() {
+    @objc private func processSendQueue() {
         queueLock.lock()
         defer { queueLock.unlock() }
 
@@ -378,7 +401,8 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
         queueLock.unlock()
 
         // Trigger the sending process
-        processSendQueue()
+        perform(#selector(processSendQueue), on: streamThread, with: nil, waitUntilDone: false)
+//        processSendQueue()
     }
     
     
@@ -386,16 +410,25 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
         l2capChannel?.inputStream.close()
         l2capChannel?.outputStream.close()
         if let peripheral = targetPeripheral {
-            centralManager.cancelPeripheralConnection(peripheral)
+            if centralManager.state == .poweredOn{
+                centralManager.cancelPeripheralConnection(peripheral)
+            }
+            else{
+                Logger.connection.info("Can not cancel | Central Manager is not powered on")
+            }
         }
-        status = "Disconnected"
+        DispatchQueue.main.async {[weak self] in
+            self?.status = "Disconnected"
+            self?.isConnected = false
+            self?.deviceName = ""
+        }
         psm = nil
         targetPeripheral = nil
         l2capChannel = nil
-        isConnected = false
-        deviceName = ""
         if doScanAfter {
-            self.startScan()
+            if !self.startScan(){
+                self.shouldRestartScan = doScanAfter
+            }
         }
     }
 }

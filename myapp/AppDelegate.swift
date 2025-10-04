@@ -26,7 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("becoming active")
     }
     func applicationDidBecomeActive(_ notification: Notification) {
-        bluetoothClient?.startScan()
+        _ = bluetoothClient?.startScan()
         print("app active")
         
     }
