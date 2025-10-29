@@ -10,44 +10,81 @@ import Foundation
 import CoreBluetooth
 import Combine
 import OSLog
+import AppKit
 
 class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeripheralDelegate, StreamDelegate {
     static let shared = BluetoothL2capClient()
     
     @Published var status = "Disconnected"
     @Published var deviceName = ""
-    @Published var receivedMessage = ""
     @Published var isConnected: Bool = false
     @Published var discoveredPeripherals: [CBPeripheral:CBL2CAPPSM] = [:]
-
-    private var centralManager: CBCentralManager!
-    private var targetPeripheral: CBPeripheral?
-    private var l2capChannel: CBL2CAPChannel?
     
+    private let bluetoothQueue = DispatchQueue(label: "com.passover.bluetooth-queue")
+    
+    private enum ConnectionState{
+        case idle
+        case scanning
+        case connecting(CBPeripheral)
+        case connected(CBPeripheral, CBL2CAPChannel)
+    }
+    
+    private var state: ConnectionState = .idle{
+        didSet{
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                switch self.state {
+                case .idle:
+                    self.isConnected = false
+                    self.status = "Disconnected"
+                    self.deviceName = ""
+                case .scanning:
+                    self.isConnected = false
+                    self.status = "Scanning..."
+                    self.deviceName = ""
+                case .connecting(let peripheral):
+                    self.isConnected = false
+                    self.status = "Connecting to \(peripheral.name ?? "device")..."
+                    self.deviceName = peripheral.name ?? "Unknown"
+                case .connected(let peripheral, _):
+                    self.isConnected = true
+                    self.status = "Connected"
+                    self.deviceName = peripheral.name ?? "Unknown"
+                }
+            }
+        }
+    }
+    
+    private var centralManager: CBCentralManager!
     private let userPreferences: UserPreferences
     private var psm: CBL2CAPPSM?
+    private var connectingPeripheral: CBPeripheral?
     
     private var expectedDataSize: Int?
     private var receivedData = Data()
-    
     private var sendingQueue: [Data] = []
     private let queueLock = NSLock()
-    private let bluetoothQueue = DispatchQueue(label: "com.passover.bluetooth-queue")
-    
     private var streamThread: Thread!
     private var isThreadRunning = false
-    private var shouldRestartScan = false
+
 
     override init() {
         self.userPreferences = UserPreferences()
         super.init()
         centralManager = CBCentralManager(delegate: self, queue: bluetoothQueue)
-        
+
         streamThread = Thread(target: self, selector: #selector(threadEntryPoint), object: nil)
         streamThread.name = "com.passover.stream-thread"
         streamThread.start()
+        
+        setupSystemEventListeners()
     }
     
+    
+    deinit{
+        NSWorkspace.shared.notificationCenter.removeObserver(self)
+    }
+
     @objc private func threadEntryPoint(){
         RunLoop.current.add(NSMachPort(), forMode: .default)
         isThreadRunning = true
@@ -56,59 +93,92 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
             RunLoop.current.run(until: Date.distantFuture)
         }
     }
-    
+
     func stopStreamThread(){
         guard isThreadRunning else {return}
         perform(#selector(stopThreadRunLoop), on: streamThread, with: nil, waitUntilDone: true)
     }
-    
+
     @objc private func stopThreadRunLoop(){
         isThreadRunning = false
     }
-
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        if central.state == .poweredOn {
-            DispatchQueue.main.async {[weak self] in
-                self?.status = "Ready to Scan"
-            }
-            if self.shouldRestartScan{
-                _ = self.startScan()
-            }
-        } else {
-            DispatchQueue.main.async {[weak self] in
-                self?.status = "Bluetooth is not available"
-            }
-        }
+    
+    private func setupSystemEventListeners(){
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(systemWillSleep), name: NSWorkspace.willSleepNotification, object: nil)
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(systemDidWake), name: NSWorkspace.didWakeNotification, object: nil)
     }
-
+    
+    @objc private func systemWillSleep(){
+        Logger.connection.info("System will sleep. Disconnecting gracefully.")
+        self.disconnect(restartScan: false)
+    }
+    
+    @objc private func systemDidWake(){
+        Logger.connection.info("System did wake. Starting scan.")
+        _ = self.startScan()
+    }
+    
     func startScan()->Bool {
         guard centralManager.state == .poweredOn else {
             Logger.connection.info("Cannot Scan – Bluetooth not powered on")
             return false
         }
-        Logger.connection.info("Starting scan")
-        DispatchQueue.main.async { [weak self] in
-            self?.discoveredPeripherals.removeAll()
-            self?.status = "Scanning..."
+        
+        bluetoothQueue.async {
+            guard case .scanning = self.state else {
+                self.state = .scanning
+                self.centralManager.scanForPeripherals(withServices: [L2CAP_SERVICE_UUID], options: nil)
+                DispatchQueue.main.async { [weak self] in
+                    self?.discoveredPeripherals.removeAll()
+                }
+                Logger.connection.info("Started scanning...")
+                return
+            }
         }
-        centralManager.scanForPeripherals(withServices: [L2CAP_SERVICE_UUID], options: nil)
         return true
     }
     
+    func manualDisconnect(){
+        Logger.connection.info("Manual disconnect initiated.")
+        self.disconnect(restartScan: false)
+    }
+    
+// MARK: - core bluetooth logic
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        switch central.state {
+        case .poweredOn:
+            DispatchQueue.main.async {[weak self] in
+                self?.status = "Ready to Scan"
+            }
+            if case .idle = self.state{
+                print("Current state: \(state)")
+                _ = self.startScan()
+            }
+        default:
+            DispatchQueue.main.async {[weak self] in
+                self?.status = "Bluetooth is not available"
+            }
+            self.state = .idle
+        }
+    }
+
+    
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        guard discoveredPeripherals[peripheral] == nil else { return }
+        
         // Extract PSM from advertisement data
         if let serviceData = advertisementData[CBAdvertisementDataServiceDataKey] as? [CBUUID: Data],
            let psmData = serviceData[L2CAP_SERVICE_UUID] {
-            
             // PSM is a 16-bit unsigned integer (UInt16) sent in little-endian format
             let parsedPSM = psmData.withUnsafeBytes { $0.load(as: UInt16.self) }
             
+            DispatchQueue.main.async { [weak self] in
+                self?.discoveredPeripherals[peripheral] = parsedPSM
+            }
+            
             if peripheral.identifier.uuidString == userPreferences.get() ?? "" {
-                Logger.connection.info("Connecting to saved device")
-                DispatchQueue.main.async { [weak self] in
-                    self?.discoveredPeripherals[peripheral] = parsedPSM
-                    self?.connect(to: peripheral, using: parsedPSM, saveUUID: false)
-                }
+                Logger.connection.info("Found saved device, connecting...")
+                self.connect(to: peripheral, using: parsedPSM, saveUUID: false)
             }
         }
     }
@@ -116,69 +186,54 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
     
     func connect(to peripheral: CBPeripheral, using psm: UInt16, saveUUID: Bool = true){
         self.psm = psm
-        DispatchQueue.main.async { [weak self] in
-            self?.status = "Found device: \(peripheral.name ?? "Unknown"), PSM: \(String(describing: self?.psm!))"
-        }
-        Logger.connection.debug("Found device with PSM: \(self.psm!)")
-        
+        self.state = .connecting(peripheral)
         centralManager.stopScan()
-        targetPeripheral = peripheral
-        DispatchQueue.main.async { [weak self] in
-            self?.deviceName = peripheral.name ?? "Unknown"
-            self?.discoveredPeripherals.removeAll()
-        }
+        self.connectingPeripheral = peripheral
         
         if saveUUID {
             userPreferences.update(identifier: peripheral.identifier.uuidString)
         }
-        
         centralManager.connect(peripheral, options: nil)
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        DispatchQueue.main.async { [weak self] in
-            self?.status = "Connected. Opening L2CAP Channel..."
-        }
         peripheral.delegate = self
+        self.connectingPeripheral = nil
         
         // Open L2CAP channel using the discovered PSM
         if let psm = self.psm {
-            DispatchQueue.main.async {[weak self] in
-                self?.isConnected = true
-            }
             peripheral.openL2CAPChannel(psm)
         } else {
-            DispatchQueue.main.async { [weak self] in
-                self?.status = "Error: PSM not found."
-            }
+            disconnect(restartScan: true)
         }
     }
     
+    func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: (any Error)?) {
+        Logger.connection.error("Failed to connect: \(error?.localizedDescription ?? "Unknown error")")
+        self.connectingPeripheral = nil
+        disconnect(restartScan: true)
+    }
+    
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: (any Error)?) {
-        DispatchQueue.main.async {
-            self.isConnected = false
-        }
         Logger.connection.info("Disconnected from \(peripheral.name ?? "Unknown")")
+        self.connectingPeripheral = nil
+        disconnect(restartScan: true)
     }
     
   
     func peripheral(_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?) {
         if let error = error {
-            DispatchQueue.main.async { [weak self] in
-                self?.isConnected = false
-                self?.status = "L2CAP channel error: \(error.localizedDescription)"
-            }
+            Logger.connection.error("L2CAP channel error: \(error.localizedDescription)")
+            disconnect(restartScan: true)
             return
         }
         guard let channel = channel else {
-            DispatchQueue.main.async { [weak self] in
-                self?.isConnected = false
-                self?.status = "L2CAP channel is nil"
-            }
+            disconnect(restartScan: true)
             return
         }
-        
+
         self.perform(#selector(setupStreamsOnThread), on: streamThread, with: channel, waitUntilDone: false)
+        self.state = .connected(peripheral, channel)
     }
     
     @objc private func setupStreamsOnThread(channel: CBL2CAPChannel){
@@ -190,48 +245,7 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
         
         channel.inputStream.open()
         channel.outputStream.open()
-        
-        DispatchQueue.main.async {
-            self.l2capChannel = channel
-            self.isConnected = true
-            self.status = "L2CAP Channel Open!"
-        }
     }
-    
-    @objc private func processSendQueue() {
-        queueLock.lock()
-        defer { queueLock.unlock() }
-
-        guard !sendingQueue.isEmpty,
-              let outputStream = l2capChannel?.outputStream,
-              outputStream.hasSpaceAvailable else {
-            return
-        }
-
-        while !sendingQueue.isEmpty && outputStream.hasSpaceAvailable {
-            let bytesWritten = sendingQueue[0].withUnsafeBytes {
-                outputStream.write($0.baseAddress!, maxLength: sendingQueue[0].count)
-            }
-
-            if bytesWritten > 0 {
-                sendingQueue[0].removeFirst(bytesWritten)
-
-                if sendingQueue[0].isEmpty {
-                    sendingQueue.removeFirst()
-                }
-            } else if bytesWritten < 0 {
-                Logger.connection.error("Stream write error: \(outputStream.streamError!)")
-                sendingQueue.removeAll()
-                disconnect(restartScan: true)
-                return
-            } else {
-                // bytesWritten is 0, the buffer is full, so we stop writing for now.
-                // The .hasSpaceAvailable event will trigger us again.
-                break
-            }
-        }
-    }
-    
     
     func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
         switch eventCode {
@@ -241,58 +255,53 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
             }
             
         case .hasSpaceAvailable:
-            if aStream == l2capChannel?.outputStream {
-                processSendQueue()
+            if case .connected(_, let channel) = self.state{
+                if aStream == channel.outputStream {
+                    processSendQueue()
+                }
             }
             
-        case .endEncountered:
-            DispatchQueue.main.async {
-                self.status = "Stream End"
-            }
-            Logger.connection.warning("L2CAP stream end encountered.")
-            disconnect(restartScan: true)
             
-        case .errorOccurred:
-            DispatchQueue.main.async {
-                self.status = "Stream Error"
+        case .endEncountered, .errorOccurred:
+            if eventCode == .errorOccurred {
+                Logger.connection.error("Stream error: \(aStream.streamError!)")
             }
-            Logger.connection.error("L2CAP stream error: \(aStream.streamError?.localizedDescription ?? "Unknown error")")
+            bluetoothQueue.async { [weak self] in
+                self?.disconnect(restartScan: true)
+            }
             
         default:
             break
         }
     }
-
+    
     private func readAvailableBytes(from inputStream: InputStream) {
         let bufferSize = 2048
         var buffer = [UInt8](repeating: 0, count: bufferSize)
-
+        
         // Keep reading while there are bytes available
         while inputStream.hasBytesAvailable {
             let bytesRead = inputStream.read(&buffer, maxLength: bufferSize)
-            if bytesRead < 0 {
-                Logger.connection.error("Stream read error: \(inputStream.streamError!)")
-                return
-            } else if bytesRead > 0 {
+            if bytesRead > 0{
                 // Append the new data
                 receivedData.append(buffer, count: bytesRead)
-            } else {
-                // 0 bytes read might mean end of stream
+            } else{
+                if let error = inputStream.streamError {
+                     Logger.connection.error("Stream read error: \(error)")
+                     return
+                }
                 break
             }
         }
         
         processDataBuffer()
     }
-
+    
     private func processDataBuffer() {
         if expectedDataSize == nil {
-            // need at least 4 bytes to read the length header.
-            guard receivedData.count >= 4 else {
-                return // Not enough data for the size prefix yet, wait for more.
-            }
+            // at least 4 bytes for header
+            guard receivedData.count >= 4 else {return}
             
-            // Extract the 4-byte header to determine message length.
             let sizeData = receivedData.prefix(4)
             let bytes = Array(sizeData)
             guard bytes.count == 4 else {
@@ -303,9 +312,9 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
             // Manually construct UInt32 from bytes (big-endian order)
             // Android's ByteBuffer.putInt() writes in big-endian (network byte order)
             let lengthInBigEndian = (UInt32(bytes[0]) << 24) |
-                                    (UInt32(bytes[1]) << 16) |
-                                    (UInt32(bytes[2]) << 8)  |
-                                    (UInt32(bytes[3]))
+            (UInt32(bytes[1]) << 16) |
+            (UInt32(bytes[2]) << 8)  |
+            (UInt32(bytes[3]))
             
             let length = Int(lengthInBigEndian)
             guard length > 0 && length <= 10_000_000 else { // 10MB max
@@ -322,28 +331,77 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
             receivedData.removeFirst(4)
         }
         
-        guard let expectedSize = expectedDataSize else {
+        guard let expectedSize = expectedDataSize, expectedSize > 0 else {
             Logger.connection.warning("No expected data size (header not received yet)")
+            self.expectedDataSize = nil
             return
         }
         
-        guard receivedData.count >= expectedSize else {
-            Logger.connection.debug("Waiting for more data, have \(self.receivedData.count), need \(expectedSize)")
-            return
-        }
+        guard receivedData.count >= expectedSize else {return}
         
         let messageData = Data(receivedData.prefix(expectedSize))
         Logger.connection.info("Complete message of size \(messageData.count).")
         updateClipboard(data: messageData)
-
+        
         receivedData.removeFirst(expectedSize)
         expectedDataSize = nil
+
+        if !receivedData.isEmpty {processDataBuffer()}
+    }
+    
+    func send(data: Data) {
+        // Create the complete packet with the size header
+        var dataSize = UInt32(data.count).bigEndian
+        let sizeData = Data(bytes: &dataSize, count: MemoryLayout<UInt32>.size)
+        let packet = sizeData + data
         
-        if !receivedData.isEmpty {
-            processDataBuffer()
+        Logger.connection.info("Sending data")
+
+        // Add the packet to the queue safely
+        queueLock.lock()
+        sendingQueue.append(packet)
+        queueLock.unlock()
+        
+        perform(#selector(processSendQueue), on: streamThread, with: nil, waitUntilDone: false)
+    }
+    
+    @objc private func processSendQueue() {
+        queueLock.lock()
+        defer { queueLock.unlock() }
+
+        guard !sendingQueue.isEmpty, case .connected(_, let channel) = self.state, let outputStream = channel.outputStream, outputStream.hasSpaceAvailable else {
+            Logger.connection.info("Not processing send queue")
+            return
+        }
+    
+
+        while !sendingQueue.isEmpty && outputStream.hasSpaceAvailable {
+            let dataToSend = sendingQueue[0]
+            let bytesWritten = dataToSend.withUnsafeBytes {
+                outputStream.write($0.baseAddress!, maxLength: dataToSend.count)
+            }
+
+            if bytesWritten > 0 {
+                sendingQueue[0].removeFirst(bytesWritten)
+                if sendingQueue[0].isEmpty {
+                    sendingQueue.removeFirst()
+                }
+            } else if bytesWritten < 0 {
+                if let error = outputStream.streamError {
+                    Logger.connection.error("Stream write error: \(error)")
+                }
+                sendingQueue.removeAll()
+                bluetoothQueue.async { [weak self] in self?.disconnect(restartScan: true) }
+                return
+            } else {
+                // bytesWritten is 0, the buffer is full, so we stop writing for now.
+                // The .hasSpaceAvailable event will trigger us again.
+                break
+            }
         }
     }
     
+        
     func updateClipboard(data:Data){
         do{
             let packet = try BPacket(serializedBytes: data)
@@ -357,78 +415,31 @@ class BluetoothL2capClient: NSObject, ObservableObject, CBCentralManagerDelegate
         }
     }
     
-//    func send(data: Data) {
-//        guard let outputStream = l2capChannel?.outputStream, outputStream.hasSpaceAvailable else {
-//            status = "Cannot send message."
-//            Logger.connection.error("L2CAP channel is not available for writing.")
-//            disconnect()
-//            return
-//        }
-//        
-//        var dataSize = UInt32(data.count).bigEndian
-//        let sizeData = Data(bytes: &dataSize, count: MemoryLayout<UInt32>.size)
-//
-//        let sizeBytesWritten = sizeData.withUnsafeBytes {
-//            outputStream.write($0.baseAddress!, maxLength: sizeData.count)
-//        }
-//        guard sizeBytesWritten == sizeData.count else {
-//            Logger.connection.error("Failed to write size prefix completely.")
-//            disconnect()
-//            return
-//        }
-//
-//        let dataBytesWritten = data.withUnsafeBytes {
-//            outputStream.write($0.baseAddress!, maxLength: data.count)
-//        }
-//        guard dataBytesWritten == data.count else {
-//            Logger.connection.error("Failed to write data payload completely.")
-//            return
-//        }
-//        
-//        Logger.connection.info("✅ Successfully queued \(dataBytesWritten) bytes for sending.")
-//    }
-//    
-    
-    func send(data: Data) {
-        // Create the complete packet with the size header
-        var dataSize = UInt32(data.count).bigEndian
-        let sizeData = Data(bytes: &dataSize, count: MemoryLayout<UInt32>.size)
-        let packet = sizeData + data
-
-        // Add the packet to the queue safely
-        queueLock.lock()
-        sendingQueue.append(packet)
-        queueLock.unlock()
-
-        // Trigger the sending process
-        perform(#selector(processSendQueue), on: streamThread, with: nil, waitUntilDone: false)
-//        processSendQueue()
-    }
-    
-    
     func disconnect(restartScan doScanAfter:Bool = false) {
-        l2capChannel?.inputStream.close()
-        l2capChannel?.outputStream.close()
-        if let peripheral = targetPeripheral {
-            if centralManager.state == .poweredOn{
-                centralManager.cancelPeripheralConnection(peripheral)
+        bluetoothQueue.async { [weak self] in
+            guard let self = self else {return}
+            
+            if case .connected(let peripheral, let channel) = self.state{
+                channel.inputStream.close()
+                channel.outputStream.close()
+                
+                if self.centralManager.state == .poweredOn{
+                    self.centralManager.cancelPeripheralConnection(peripheral)
+                }
             }
-            else{
-                Logger.connection.info("Can not cancel | Central Manager is not powered on")
+            
+            stopStreamThread()
+            self.sendingQueue.removeAll()
+            self.receivedData.removeAll()
+            self.expectedDataSize = nil
+            
+            if doScanAfter{
+                _ = self.startScan()
+            } else {
+                self.centralManager.stopScan()
+                self.state = .idle
             }
-        }
-        DispatchQueue.main.async {[weak self] in
-            self?.status = "Disconnected"
-            self?.isConnected = false
-            self?.deviceName = ""
-        }
-        psm = nil
-        targetPeripheral = nil
-        l2capChannel = nil
-        if doScanAfter {
-            if !self.startScan(){
-                self.shouldRestartScan = doScanAfter
-            }
+                
         }
     }
 }

@@ -22,6 +22,7 @@
 		078EFF9B2C84AAC6003312D0 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF9A2C84AAC6003312D0 /* Home.swift */; };
 		078EFF9D2C84B6B5003312D0 /* ScanResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF9C2C84B6B5003312D0 /* ScanResult.swift */; };
 		078EFFA92C86442E003312D0 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFFA82C86442E003312D0 /* Common.swift */; };
+		079740CE2EB1F6B4003B302D /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079740CD2EB1F6B4003B302D /* CustomTabView.swift */; };
 		07D255F12DFEC23100C07861 /* FileReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D255F02DFEC23100C07861 /* FileReceiver.swift */; };
 		07DF436229B1CB0F009ED75C /* myappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436129B1CB0F009ED75C /* myappApp.swift */; };
 		07DF436429B1CB0F009ED75C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436329B1CB0F009ED75C /* ContentView.swift */; };
@@ -30,7 +31,6 @@
 		07DF437429B1CB10009ED75C /* myappTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437329B1CB10009ED75C /* myappTests.swift */; };
 		07DF437E29B1CB10009ED75C /* myappUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437D29B1CB10009ED75C /* myappUITests.swift */; };
 		07DF438029B1CB10009ED75C /* myappUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437F29B1CB10009ED75C /* myappUITestsLaunchTests.swift */; };
-		07F3E9572E2BBFD400374E5D /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07F3E9552E2BBFD000374E5D /* IOBluetooth.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +64,7 @@
 		078EFF9A2C84AAC6003312D0 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		078EFF9C2C84B6B5003312D0 /* ScanResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResult.swift; sourceTree = "<group>"; };
 		078EFFA82C86442E003312D0 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		079740CD2EB1F6B4003B302D /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 		07D255F02DFEC23100C07861 /* FileReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileReceiver.swift; sourceTree = "<group>"; };
 		07DF435E29B1CB0F009ED75C /* Passover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Passover.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DF436129B1CB0F009ED75C /* myappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappApp.swift; sourceTree = "<group>"; };
@@ -93,7 +94,6 @@
 				0762C25D2C2846530077A8B6 /* SwiftProtobufPluginLibrary in Frameworks */,
 				0743CF362BE6B72C009D356D /* ISSoundAdditions in Frameworks */,
 				0762C25B2C2846530077A8B6 /* SwiftProtobuf in Frameworks */,
-				07F3E9572E2BBFD400374E5D /* IOBluetooth.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,6 +145,7 @@
 		078EFF992C84AAAF003312D0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				079740CD2EB1F6B4003B302D /* CustomTabView.swift */,
 				078EFF9A2C84AAC6003312D0 /* Home.swift */,
 				078EFFA82C86442E003312D0 /* Common.swift */,
 				078EFF9C2C84B6B5003312D0 /* ScanResult.swift */,
@@ -380,6 +381,7 @@
 				078EFF9D2C84B6B5003312D0 /* ScanResult.swift in Sources */,
 				078EFF882C83512E003312D0 /* PacketManager.swift in Sources */,
 				078EFF8A2C83516D003312D0 /* Utilities.swift in Sources */,
+				079740CE2EB1F6B4003B302D /* CustomTabView.swift in Sources */,
 				076117B72A44297300940D9C /* Constants.swift in Sources */,
 				072EFC5D2C96184900BAF61B /* AppDelegate.swift in Sources */,
 				078EFF842C8350DF003312D0 /* LogConfig.swift in Sources */,
@@ -561,8 +563,8 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Passover-Debug";
 				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Do you allow automation?";
-				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Create a gatt server";
-				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Create gatt server ";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Connect to a L2CAP server";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Connect to a L2CAP server";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -595,8 +597,8 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Passover-Debug";
 				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Do you allow automation?";
-				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Create a gatt server";
-				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Create gatt server ";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Connect to a L2CAP server";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Connect to a L2CAP server";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

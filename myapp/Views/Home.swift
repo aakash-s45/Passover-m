@@ -5,6 +5,7 @@ struct Home: View{
     
     var body: some View {
         VStack{
+            Text(bluetoothClient.status).font(.title)
             if bluetoothClient.isConnected {
                 HStack{
                     Text(bluetoothClient.deviceName).font(.title).bold()
@@ -15,7 +16,6 @@ struct Home: View{
                 }
             }
             else{
-                Text(bluetoothClient.status).font(.title)
                 ScanResult()
                 if bluetoothClient.status != "Scanning..."{
                     Button("Scan"){

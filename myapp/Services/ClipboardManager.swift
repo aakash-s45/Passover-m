@@ -87,7 +87,8 @@ class ClipboardManager {
                     self.publishData(text: base64String, type: "img")
                 }
             } else {
-                Logger.connection.debug("New clipboard text: \(base64String)")
+                let preview = base64String.count > 10 ? String(base64String.prefix(20)) : base64String
+                Logger.connection.debug("New clipboard text: \(preview)")
                 self.publishData(text: base64String, type: "txt")
             }
         }
