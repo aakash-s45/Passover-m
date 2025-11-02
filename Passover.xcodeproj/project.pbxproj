@@ -19,13 +19,12 @@
 		078EFF882C83512E003312D0 /* PacketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF872C83512E003312D0 /* PacketManager.swift */; };
 		078EFF8A2C83516D003312D0 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF892C83516D003312D0 /* Utilities.swift */; };
 		078EFF962C835E11003312D0 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF952C835E11003312D0 /* UserPreferences.swift */; };
-		078EFF9B2C84AAC6003312D0 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF9A2C84AAC6003312D0 /* Home.swift */; };
-		078EFF9D2C84B6B5003312D0 /* ScanResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF9C2C84B6B5003312D0 /* ScanResult.swift */; };
+		078EFF9B2C84AAC6003312D0 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF9A2C84AAC6003312D0 /* Menu.swift */; };
 		078EFFA92C86442E003312D0 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFFA82C86442E003312D0 /* Common.swift */; };
 		079740CE2EB1F6B4003B302D /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079740CD2EB1F6B4003B302D /* CustomTabView.swift */; };
+		079B61DA2EB1FD45002B6EB4 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079B61D92EB1FD40002B6EB4 /* PreferencesView.swift */; };
 		07D255F12DFEC23100C07861 /* FileReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D255F02DFEC23100C07861 /* FileReceiver.swift */; };
-		07DF436229B1CB0F009ED75C /* myappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436129B1CB0F009ED75C /* myappApp.swift */; };
-		07DF436429B1CB0F009ED75C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436329B1CB0F009ED75C /* ContentView.swift */; };
+		07DF436229B1CB0F009ED75C /* PassoverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436129B1CB0F009ED75C /* PassoverApp.swift */; };
 		07DF436629B1CB10009ED75C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DF436529B1CB10009ED75C /* Assets.xcassets */; };
 		07DF436929B1CB10009ED75C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DF436829B1CB10009ED75C /* Preview Assets.xcassets */; };
 		07DF437429B1CB10009ED75C /* myappTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437329B1CB10009ED75C /* myappTests.swift */; };
@@ -61,14 +60,13 @@
 		078EFF872C83512E003312D0 /* PacketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketManager.swift; sourceTree = "<group>"; };
 		078EFF892C83516D003312D0 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		078EFF952C835E11003312D0 /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
-		078EFF9A2C84AAC6003312D0 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
-		078EFF9C2C84B6B5003312D0 /* ScanResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResult.swift; sourceTree = "<group>"; };
+		078EFF9A2C84AAC6003312D0 /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
 		078EFFA82C86442E003312D0 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		079740CD2EB1F6B4003B302D /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
+		079B61D92EB1FD40002B6EB4 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		07D255F02DFEC23100C07861 /* FileReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileReceiver.swift; sourceTree = "<group>"; };
 		07DF435E29B1CB0F009ED75C /* Passover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Passover.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		07DF436129B1CB0F009ED75C /* myappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappApp.swift; sourceTree = "<group>"; };
-		07DF436329B1CB0F009ED75C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		07DF436129B1CB0F009ED75C /* PassoverApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassoverApp.swift; sourceTree = "<group>"; };
 		07DF436529B1CB10009ED75C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		07DF436829B1CB10009ED75C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		07DF436A29B1CB10009ED75C /* myapp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myapp.entitlements; sourceTree = "<group>"; };
@@ -77,12 +75,10 @@
 		07DF437929B1CB10009ED75C /* PassoverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PassoverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DF437D29B1CB10009ED75C /* myappUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappUITests.swift; sourceTree = "<group>"; };
 		07DF437F29B1CB10009ED75C /* myappUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		07F3E9552E2BBFD000374E5D /* IOBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetooth.framework; path = System/Library/Frameworks/IOBluetooth.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		079F509A2E199BA600CA0D26 /* Services */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Services; sourceTree = "<group>"; };
-		079F509B2E19A0D400CA0D26 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,10 +141,10 @@
 		078EFF992C84AAAF003312D0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				079B61D92EB1FD40002B6EB4 /* PreferencesView.swift */,
 				079740CD2EB1F6B4003B302D /* CustomTabView.swift */,
-				078EFF9A2C84AAC6003312D0 /* Home.swift */,
+				078EFF9A2C84AAC6003312D0 /* Menu.swift */,
 				078EFFA82C86442E003312D0 /* Common.swift */,
-				078EFF9C2C84B6B5003312D0 /* ScanResult.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -159,7 +155,6 @@
 				07DF436029B1CB0F009ED75C /* myapp */,
 				07DF437229B1CB10009ED75C /* myappTests */,
 				07DF437C29B1CB10009ED75C /* myappUITests */,
-				07F3E9542E2BBFD000374E5D /* Frameworks */,
 				07DF435F29B1CB0F009ED75C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -177,7 +172,6 @@
 		07DF436029B1CB0F009ED75C /* myapp */ = {
 			isa = PBXGroup;
 			children = (
-				079F509B2E19A0D400CA0D26 /* Models */,
 				079F509A2E199BA600CA0D26 /* Services */,
 				078EFF992C84AAAF003312D0 /* Views */,
 				078EFF822C8350D3003312D0 /* Utils */,
@@ -186,9 +180,8 @@
 				075AE4902BDE827F003821FC /* myappRelease.entitlements */,
 				07187D7429B305EB0087EA5E /* Info.plist */,
 				0762700A2C97378200950627 /* Passover.icns */,
-				07DF436129B1CB0F009ED75C /* myappApp.swift */,
+				07DF436129B1CB0F009ED75C /* PassoverApp.swift */,
 				072EFC5C2C96184800BAF61B /* AppDelegate.swift */,
-				07DF436329B1CB0F009ED75C /* ContentView.swift */,
 				07DF436529B1CB10009ED75C /* Assets.xcassets */,
 				07DF436A29B1CB10009ED75C /* myapp.entitlements */,
 				07DF436729B1CB10009ED75C /* Preview Content */,
@@ -221,14 +214,6 @@
 			path = myappUITests;
 			sourceTree = "<group>";
 		};
-		07F3E9542E2BBFD000374E5D /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				07F3E9552E2BBFD000374E5D /* IOBluetooth.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -246,7 +231,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				079F509A2E199BA600CA0D26 /* Services */,
-				079F509B2E19A0D400CA0D26 /* Models */,
 			);
 			name = Passover;
 			packageProductDependencies = (
@@ -303,7 +287,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					07DF435D29B1CB0F009ED75C = {
 						CreatedOnToolsVersion = 14.2;
@@ -377,16 +361,15 @@
 				078EFF962C835E11003312D0 /* UserPreferences.swift in Sources */,
 				0762C2582C2844F40077A8B6 /* Message.pb.swift in Sources */,
 				078EFFA92C86442E003312D0 /* Common.swift in Sources */,
-				078EFF9B2C84AAC6003312D0 /* Home.swift in Sources */,
-				078EFF9D2C84B6B5003312D0 /* ScanResult.swift in Sources */,
+				078EFF9B2C84AAC6003312D0 /* Menu.swift in Sources */,
 				078EFF882C83512E003312D0 /* PacketManager.swift in Sources */,
 				078EFF8A2C83516D003312D0 /* Utilities.swift in Sources */,
 				079740CE2EB1F6B4003B302D /* CustomTabView.swift in Sources */,
+				079B61DA2EB1FD45002B6EB4 /* PreferencesView.swift in Sources */,
 				076117B72A44297300940D9C /* Constants.swift in Sources */,
 				072EFC5D2C96184900BAF61B /* AppDelegate.swift in Sources */,
 				078EFF842C8350DF003312D0 /* LogConfig.swift in Sources */,
-				07DF436429B1CB0F009ED75C /* ContentView.swift in Sources */,
-				07DF436229B1CB0F009ED75C /* myappApp.swift in Sources */,
+				07DF436229B1CB0F009ED75C /* PassoverApp.swift in Sources */,
 				07D255F12DFEC23100C07861 /* FileReceiver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -483,6 +466,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -540,6 +524,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
@@ -557,13 +542,25 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"myapp/Preview Content\"";
+				DEVELOPMENT_TEAM = 37FHLU3Q9L;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = YES;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = myapp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Passover-Debug";
-				INFOPLIST_KEY_LSUIElement = NO;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Do you allow automation?";
-				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Connect to a L2CAP server";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allows nearby devices to find this device.";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Connect to a L2CAP server";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -573,6 +570,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.aks.Passover;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = YES;
+				RUNTIME_EXCEPTION_ALLOW_JIT = YES;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = YES;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = YES;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = YES;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -590,14 +593,27 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"myapp/Preview Content\"";
+				DEVELOPMENT_TEAM = 37FHLU3Q9L;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = YES;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = myapp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Passover-Debug";
-				INFOPLIST_KEY_LSUIElement = NO;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Do you allow automation?";
-				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Connect to a L2CAP server";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allows nearby devices to find this device.";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Connect to a L2CAP server";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -607,6 +623,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.aks.Passover;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = YES;
+				RUNTIME_EXCEPTION_ALLOW_JIT = YES;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = YES;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = YES;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = YES;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -738,8 +760,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-protobuf.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.26.0;
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

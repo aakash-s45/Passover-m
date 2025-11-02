@@ -10,31 +10,42 @@ import AppKit
 
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    var bluetoothClient:BluetoothL2capClient?
-    var clipboardManager:ClipboardManager?
-    var networkManager:NetworkManager?
+//    var bluetoothClient:BluetoothL2capClient?
+
+    var pairingManager: PairingManager
+    var networkManager: NetworkManager
+    var clipboardManager: ClipboardManager?
+    
+    override init() {
+        pairingManager = PairingManager()
+        networkManager = NetworkManager.shared
+        networkManager.configure(pairingManager: pairingManager)
+        networkManager.start()
+        clipboardManager = ClipboardManager()
+        
+        super.init()
+    }
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("app launched")
-    }
-    func applicationWillBecomeActive(_ notification: Notification) {
-        bluetoothClient = BluetoothL2capClient.shared
-        clipboardManager = ClipboardManager.shared
-        networkManager = NetworkManager.shared
-        clipboardManager?.bluetoothClient = bluetoothClient
+        networkManager.onClipboardMessage = {[weak clipboardManager] message in
+            clipboardManager?.addDataToClipboard(data: message)
+        }
         
-        print("becoming active")
+        clipboardManager?.onClipboardUpdate = {[weak networkManager] data in
+            networkManager?.sendClipboardData(data: data)
+        }
     }
-    func applicationDidBecomeActive(_ notification: Notification) {
-        _ = bluetoothClient?.startScan()
-        print("app active")
-        
-    }
-    func applicationWillResignActive(_ notification: Notification) {
-        print("becoming inactive")
-    }
+    
+
     func applicationWillTerminate(_ notification: Notification) {
         print("app will terminate")
-        bluetoothClient?.disconnect()
+        networkManager.close()
+        clipboardManager = nil
     }
+    
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return false
+    }
+
 }

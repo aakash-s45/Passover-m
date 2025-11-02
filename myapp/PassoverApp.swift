@@ -1,0 +1,28 @@
+//
+//  myappApp.swift
+//  myapp
+//
+//  Created by Aakash Solanki on 03/03/23.
+//
+
+import SwiftUI
+
+
+@main
+struct myappApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
+
+
+    var body: some Scene {
+        MenuBarExtra(isInserted: $showMenuBarExtra) {
+            Menu()
+        } label: {
+            Image("PassoverMenuIcon")
+                .renderingMode(.template)
+        }
+        Window("Preferences", id: "preferences-window"){
+            PreferencesView().environmentObject(appDelegate.pairingManager)
+        }
+    }
+}
