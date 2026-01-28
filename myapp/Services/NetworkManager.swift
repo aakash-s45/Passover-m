@@ -11,18 +11,39 @@ final class NetworkManager{
     private var connections: [NWConnection] = []
     private var symmetricKey:SymmetricKey?
     private weak var pairingManager: PairingManager?
+    private var isVerifiedConneciton = false
+    private let networkQueue = DispatchQueue(label: "com.local.passover.network", qos: .userInitiated)
+    private let monitor = NWPathMonitor()
     
     var onClipboardMessage: ((ClipboardMessage) -> Void)?
     
     private init() {
+//        TODO: send heartbeat to active connection every 30 seconds
         deviceId = UserDefaults.standard.string(forKey: kDeviceId) ?? ""
+        
+        monitor.pathUpdateHandler = {[weak self] path in
+            if(path.status == .satisfied){
+                Logger.connection.info("Network satisfied, ensuring server is running")
+//                TODO: restart listener and all
+            }
+            else{
+                Logger.connection.warning("No network connection")
+                self?.close()
+            }
+            self?.monitor.start(queue: .main)
+        }
     }
     
     func configure(pairingManager: PairingManager){
         self.pairingManager = pairingManager
     }
     
-    func start(port: UInt16 = 9999){
+    func start(){
+        if listener != nil {
+            listener?.cancel()
+            listener = nil
+        }
+        
         if deviceId == ""{
             Logger.connection.error("DeviceId not found in network manager!")
             return
@@ -33,13 +54,20 @@ final class NetworkManager{
         paramenters.includePeerToPeer = true
         paramenters.defaultProtocolStack.applicationProtocols.insert(options, at: 0)
         
-        guard let nwPort = NWEndpoint.Port(rawValue: port) else {
+        guard let nwPort = NWEndpoint.Port(rawValue: 0) else {
             Logger.connection.error("Invalid Port")
             return
         }
         
         do{
+            let txt = NWTXTRecord(["deviceId": deviceId])
             listener = try NWListener(using: paramenters, on: nwPort)
+            listener?.service = NWListener.Service(
+                name: "Passover",
+                type: "_passover._tcp",
+                domain: "local",
+                txtRecord: txt
+            )
         }catch{
             Logger.connection.error("Failed to start NWListener: \(error)")
             return
@@ -49,12 +77,12 @@ final class NetworkManager{
             guard let self = self else { return }
             switch newState{
             case .ready:
-                Logger.connection.info("Websocket server started and listening on port: \(port)")
-                let txt = NWTXTRecord(["deviceId": deviceId])
-                listener?.service = NWListener.Service(name: "Passover", type: "_passover._tcp", domain: "local", txtRecord: txt)
+                Logger.connection.info("Websocket server started and listening on port: \(nwPort.rawValue), device: \(deviceId)")
             case .failed(let error):
                 Logger.connection.error("Failed to start NWListener: \(error)")
                 self.close()
+            case .cancelled:
+                Logger.connection.error("Listener cancelled")
             default:
                 break
             }
@@ -68,7 +96,7 @@ final class NetworkManager{
             self?.handleNewConnection(newConnection)
         }
         
-        listener?.start(queue: .main)
+        listener?.start(queue: networkQueue)
     }
     
     func close(){
@@ -78,6 +106,7 @@ final class NetworkManager{
         connections.removeAll()
         listener?.cancel()
         listener = nil
+        isVerifiedConneciton = false
         Logger.connection.info("WS Listener closed!")
     }
     
@@ -97,7 +126,7 @@ final class NetworkManager{
                 break
             }
         }
-        connection.start(queue: .main)
+        connection.start(queue: networkQueue)
     }
     
     private func receive(on connection: NWConnection){
@@ -113,13 +142,21 @@ final class NetworkManager{
                 return
             }
             
+            if let metadata = context?.protocolMetadata(definition: NWProtocolWebSocket.definition) as? NWProtocolWebSocket.Metadata{
+                if metadata.opcode == .close{
+                    Logger.connection.info("Received Close Frame. Closing connection.")
+                    self.removeConnection(connection)
+                    return
+                }
+            }
+            
             let keyToTry = pairingManager.isKeySaved ? loadEcryptionKey() : pairingManager.currentEncryptionKey
             
             guard let key = keyToTry else {
                 Logger.connection.error("Failed to get key to decrypt data")
                 return
             }
-            
+                        
             if let data = content, !data.isEmpty {
                 do{
                     let decryptedData = try KeyStore.decrypt(data, using: key)
@@ -132,7 +169,7 @@ final class NetworkManager{
                     
                     onReceive(message, from: connection)
                 }catch{
-                    Logger.connection.error("Removing connection, Failed to encrypt data due to \(error)")
+                    Logger.connection.error("Removing connection, Failed to decrypt data due to \(error)")
                     removeConnection(connection)
                 }
             }
@@ -144,14 +181,14 @@ final class NetworkManager{
     }
     
     private func verifyConnection(data: Message) -> Bool{
+        if isVerifiedConneciton{
+            return true
+        }
         guard let pairingManager = self.pairingManager else {
             Logger.connection.error("Pairing manager is nil")
             return false
         }
         
-        if pairingManager.isKeySaved{
-            return true
-        }
         guard case .identity(let identity) = data.payload else{
             Logger.connection.error("First message should be identity message only!")
             return false
@@ -161,14 +198,33 @@ final class NetworkManager{
             return false
         }
         
-        pairingManager.saveEncryptionKey()
-        Logger.connection.info("First message received, device is paired!")
+        if !pairingManager.isKeySaved{
+            self.symmetricKey = pairingManager.currentEncryptionKey
+        }
+        
+        let identityPayload = Message.with{
+            $0.timestampMs = Int64(Date().timeIntervalSince1970 * 1000)
+            $0.identity = Identity.with{
+                $0.deviceID = deviceId
+            }
+        }
+        sendMessage(identityPayload)
+        if !pairingManager.isKeySaved{
+            pairingManager.saveEncryptionKey()
+            Logger.connection.info("First message received, device is paired!")
+        }
+        else{
+            Logger.connection.info("Device Verified!")
+        }
+        isVerifiedConneciton = true
+//       TODO: make a 3 way handshake process to save the key
         return true
     }
     
     private func removeConnection(_ connection: NWConnection){
         connection.cancel()
         connections.removeAll { $0.endpoint == connection.endpoint }
+        isVerifiedConneciton = false
     }
     
     private func loadEcryptionKey()->SymmetricKey?{
@@ -178,6 +234,7 @@ final class NetworkManager{
             return symmetricKey
         }catch{
             Logger.connection.error("Failed to fetch symmetric key, can't start the server!, error: \(error)")
+            self.close()
             return nil
         }
     }
@@ -186,6 +243,7 @@ final class NetworkManager{
         if let payload = message.payload {
             switch payload {
             case .clipboard(let clipboard):
+                Logger.connection.info("Received clipboard data")
                 onClipboardMessage?(clipboard)
 
             case .mediaControl(let mediaControl):

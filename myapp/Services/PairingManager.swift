@@ -47,22 +47,6 @@ class PairingManager: ObservableObject{
         Logger.ui.info("Generated new encryption key")
     }
     
-    func verifyEncryptionKey(using data: Data){
-        guard let keyToSave = currentEncryptionKey else {
-            Logger.ui.error("No temporary key available to save")
-            return
-        }
-        do{
-            let decryptedData = try KeyStore.decrypt(data, using: keyToSave)
-//            TODO: check data
-            if !decryptedData.isEmpty {
-                saveEncryptionKey()
-            }
-        }catch{
-            Logger.ui.error("Failed to verify the data using the temporary key due to: \(error)")
-        }
-    }
-    
     func saveEncryptionKey(){
         guard let keyToSave = currentEncryptionKey else {
             Logger.ui.error("No temporary key available to save")
@@ -94,13 +78,12 @@ class PairingManager: ObservableObject{
     private func updateQRCode(){
         guard !isKeySaved, let key = currentEncryptionKey else {
             self.qrCode = nil
-            Logger.ui.warning("No encryption key to generate QR code")
+            Logger.ui.warning("No encryption key to generate QR code or New QR not needed")
             return
         }
         
         let keyData = key.withUnsafeBytes{ Data($0) }
         let keyBase64 = keyData.base64EncodedString()
-                
         let qrPayload = Message.with{
             $0.timestampMs = Int64(Date().timeIntervalSince1970 * 1000)
             $0.qrPayload = QRPayload.with{
@@ -108,7 +91,7 @@ class PairingManager: ObservableObject{
                 $0.key = keyBase64
             }
         }
-        
+
         do{
             let qrDataBase64 = try qrPayload.serializedData().base64EncodedData()
             if let ciImage = generateQRCode(from: qrDataBase64){

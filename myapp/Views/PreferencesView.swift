@@ -26,6 +26,9 @@ struct SetupView: View {
         if pairingmanager.isKeySaved{
             VStack{
                 Text("Key is saved!")
+                Button("Reset"){
+                    pairingmanager.forgetPermanentKey()
+                }
             }
         }
         else{
