@@ -20,6 +20,10 @@ class PairingManager: ObservableObject{
         updateQRCode()
     }
     
+    deinit{
+        Logger.ui.info("PairingManager is stopping")
+    }
+    
     private func getOrGenerateDeviceId(){
         if let storedId = UserDefaults.standard.string(forKey: kDeviceId){
             deviceId = storedId

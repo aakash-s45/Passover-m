@@ -30,7 +30,7 @@ final class NetworkManager{
                 Logger.connection.warning("No network connection")
                 self?.close()
             }
-            self?.monitor.start(queue: .main)
+            
         }
     }
     
@@ -44,10 +44,13 @@ final class NetworkManager{
             listener = nil
         }
         
+        monitor.start(queue: .main)
+        
         if deviceId == ""{
             Logger.connection.error("DeviceId not found in network manager!")
             return
         }
+        
         
         let options = NWProtocolWebSocket.Options()
         let paramenters = NWParameters.tcp
@@ -107,6 +110,7 @@ final class NetworkManager{
         listener?.cancel()
         listener = nil
         isVerifiedConneciton = false
+        monitor.cancel()
         Logger.connection.info("WS Listener closed!")
     }
     

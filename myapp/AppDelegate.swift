@@ -59,22 +59,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ notification: Notification) {
         Logger.viewCycle.debug("app will terminate: \(notification.debugDescription)")
         networkManager.close()
-        clipboardManager?.stopMonitoring()
         clipboardManager = nil
     }
     
 
     @objc func willSleep() {
-        // 1. Send "Status: Sleeping" message to Android
-        // 2. NetworkManager.close()
-        // 3. ClipboardManager.stopMonitoring() (Save CPU)
-        
+//         1. Send "Status: Sleeping" message to Android
+        clipboardManager = nil
+        networkManager.close()
         Logger.viewCycle.debug("will sleep")
     }
 
     @objc func didWake() {
-        // 1. NetworkManager.start()
-        // 2. ClipboardManager.startMonitoring()
+        networkManager.start()
+        clipboardManager = ClipboardManager()
+        
+        networkManager.onClipboardMessage = {[weak clipboardManager] message in
+            clipboardManager?.addDataToClipboard(data: message)
+        }
+        
+        clipboardManager?.onClipboardUpdate = {[weak networkManager] data in
+            networkManager?.sendClipboardData(data: data)
+        }
         Logger.viewCycle.debug("did wake")
     }
 

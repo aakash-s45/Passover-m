@@ -16,14 +16,10 @@
 		0762C25D2C2846530077A8B6 /* SwiftProtobufPluginLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 0762C25C2C2846530077A8B6 /* SwiftProtobufPluginLibrary */; };
 		0762C25F2C2846530077A8B6 /* protoc-gen-swift in Frameworks */ = {isa = PBXBuildFile; productRef = 0762C25E2C2846530077A8B6 /* protoc-gen-swift */; };
 		078EFF842C8350DF003312D0 /* LogConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF832C8350DF003312D0 /* LogConfig.swift */; };
-		078EFF882C83512E003312D0 /* PacketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF872C83512E003312D0 /* PacketManager.swift */; };
 		078EFF8A2C83516D003312D0 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF892C83516D003312D0 /* Utilities.swift */; };
-		078EFF962C835E11003312D0 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF952C835E11003312D0 /* UserPreferences.swift */; };
 		078EFF9B2C84AAC6003312D0 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF9A2C84AAC6003312D0 /* Menu.swift */; };
-		078EFFA92C86442E003312D0 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFFA82C86442E003312D0 /* Common.swift */; };
 		079740CE2EB1F6B4003B302D /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079740CD2EB1F6B4003B302D /* CustomTabView.swift */; };
 		079B61DA2EB1FD45002B6EB4 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079B61D92EB1FD40002B6EB4 /* PreferencesView.swift */; };
-		07D255F12DFEC23100C07861 /* FileReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D255F02DFEC23100C07861 /* FileReceiver.swift */; };
 		07DF436229B1CB0F009ED75C /* PassoverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436129B1CB0F009ED75C /* PassoverApp.swift */; };
 		07DF436629B1CB10009ED75C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DF436529B1CB10009ED75C /* Assets.xcassets */; };
 		07DF436929B1CB10009ED75C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DF436829B1CB10009ED75C /* Preview Assets.xcassets */; };
@@ -57,14 +53,10 @@
 		0762700A2C97378200950627 /* Passover.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Passover.icns; sourceTree = "<group>"; };
 		0762C2562C2844F40077A8B6 /* Message.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.pb.swift; sourceTree = "<group>"; };
 		078EFF832C8350DF003312D0 /* LogConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogConfig.swift; sourceTree = "<group>"; };
-		078EFF872C83512E003312D0 /* PacketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketManager.swift; sourceTree = "<group>"; };
 		078EFF892C83516D003312D0 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
-		078EFF952C835E11003312D0 /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
 		078EFF9A2C84AAC6003312D0 /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
-		078EFFA82C86442E003312D0 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		079740CD2EB1F6B4003B302D /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 		079B61D92EB1FD40002B6EB4 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
-		07D255F02DFEC23100C07861 /* FileReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileReceiver.swift; sourceTree = "<group>"; };
 		07DF435E29B1CB0F009ED75C /* Passover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Passover.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DF436129B1CB0F009ED75C /* PassoverApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassoverApp.swift; sourceTree = "<group>"; };
 		07DF436529B1CB10009ED75C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -118,16 +110,6 @@
 			path = proto;
 			sourceTree = "<group>";
 		};
-		0762C2522C28438D0077A8B6 /* classes */ = {
-			isa = PBXGroup;
-			children = (
-				07D255F02DFEC23100C07861 /* FileReceiver.swift */,
-				078EFF952C835E11003312D0 /* UserPreferences.swift */,
-				078EFF872C83512E003312D0 /* PacketManager.swift */,
-			);
-			path = classes;
-			sourceTree = "<group>";
-		};
 		078EFF822C8350D3003312D0 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -144,7 +126,6 @@
 				079B61D92EB1FD40002B6EB4 /* PreferencesView.swift */,
 				079740CD2EB1F6B4003B302D /* CustomTabView.swift */,
 				078EFF9A2C84AAC6003312D0 /* Menu.swift */,
-				078EFFA82C86442E003312D0 /* Common.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -175,7 +156,6 @@
 				079F509A2E199BA600CA0D26 /* Services */,
 				078EFF992C84AAAF003312D0 /* Views */,
 				078EFF822C8350D3003312D0 /* Utils */,
-				0762C2522C28438D0077A8B6 /* classes */,
 				0762C2512C2843860077A8B6 /* proto */,
 				075AE4902BDE827F003821FC /* myappRelease.entitlements */,
 				07187D7429B305EB0087EA5E /* Info.plist */,
@@ -358,11 +338,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				078EFF962C835E11003312D0 /* UserPreferences.swift in Sources */,
 				0762C2582C2844F40077A8B6 /* Message.pb.swift in Sources */,
-				078EFFA92C86442E003312D0 /* Common.swift in Sources */,
 				078EFF9B2C84AAC6003312D0 /* Menu.swift in Sources */,
-				078EFF882C83512E003312D0 /* PacketManager.swift in Sources */,
 				078EFF8A2C83516D003312D0 /* Utilities.swift in Sources */,
 				079740CE2EB1F6B4003B302D /* CustomTabView.swift in Sources */,
 				079B61DA2EB1FD45002B6EB4 /* PreferencesView.swift in Sources */,
@@ -370,7 +347,6 @@
 				072EFC5D2C96184900BAF61B /* AppDelegate.swift in Sources */,
 				078EFF842C8350DF003312D0 /* LogConfig.swift in Sources */,
 				07DF436229B1CB0F009ED75C /* PassoverApp.swift in Sources */,
-				07D255F12DFEC23100C07861 /* FileReceiver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
