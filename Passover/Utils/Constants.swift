@@ -1,6 +1,5 @@
 //
 //  Constants.swift
-//  myapp
 //
 //  Created by Aakash Solanki on 22/06/23.
 //

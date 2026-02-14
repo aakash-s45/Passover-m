@@ -1,6 +1,5 @@
 //
 //  AppDelegate.swift
-//  myapp
 //
 //  Created by Aakash Solanki on 15/09/24.
 //

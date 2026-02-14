@@ -1,6 +1,5 @@
 //
-//  myappApp.swift
-//  myapp
+//  PassoverApp.swift
 //
 //  Created by Aakash Solanki on 03/03/23.
 //
@@ -9,7 +8,7 @@ import SwiftUI
 
 
 @main
-struct myappApp: App {
+struct PassoverApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
 

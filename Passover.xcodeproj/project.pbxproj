@@ -23,9 +23,9 @@
 		07DF436229B1CB0F009ED75C /* PassoverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436129B1CB0F009ED75C /* PassoverApp.swift */; };
 		07DF436629B1CB10009ED75C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DF436529B1CB10009ED75C /* Assets.xcassets */; };
 		07DF436929B1CB10009ED75C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DF436829B1CB10009ED75C /* Preview Assets.xcassets */; };
-		07DF437429B1CB10009ED75C /* myappTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437329B1CB10009ED75C /* myappTests.swift */; };
-		07DF437E29B1CB10009ED75C /* myappUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437D29B1CB10009ED75C /* myappUITests.swift */; };
-		07DF438029B1CB10009ED75C /* myappUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437F29B1CB10009ED75C /* myappUITestsLaunchTests.swift */; };
+		07DF437429B1CB10009ED75C /* PassoverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437329B1CB10009ED75C /* PassoverTests.swift */; };
+		07DF437E29B1CB10009ED75C /* PassoverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437D29B1CB10009ED75C /* PassoverUITests.swift */; };
+		07DF438029B1CB10009ED75C /* PassoverUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF437F29B1CB10009ED75C /* PassoverUITestsLaunchTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +48,7 @@
 /* Begin PBXFileReference section */
 		07187D7429B305EB0087EA5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		072EFC5C2C96184800BAF61B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		075AE4902BDE827F003821FC /* myappRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myappRelease.entitlements; sourceTree = "<group>"; };
+		075AE4902BDE827F003821FC /* PassoverRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PassoverRelease.entitlements; sourceTree = "<group>"; };
 		076117B62A44297300940D9C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		0762700A2C97378200950627 /* Passover.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Passover.icns; sourceTree = "<group>"; };
 		0762C2562C2844F40077A8B6 /* Message.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.pb.swift; sourceTree = "<group>"; };
@@ -61,12 +61,12 @@
 		07DF436129B1CB0F009ED75C /* PassoverApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassoverApp.swift; sourceTree = "<group>"; };
 		07DF436529B1CB10009ED75C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		07DF436829B1CB10009ED75C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		07DF436A29B1CB10009ED75C /* myapp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myapp.entitlements; sourceTree = "<group>"; };
+		07DF436A29B1CB10009ED75C /* Passover.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Passover.entitlements; sourceTree = "<group>"; };
 		07DF436F29B1CB10009ED75C /* PassoverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PassoverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		07DF437329B1CB10009ED75C /* myappTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappTests.swift; sourceTree = "<group>"; };
+		07DF437329B1CB10009ED75C /* PassoverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassoverTests.swift; sourceTree = "<group>"; };
 		07DF437929B1CB10009ED75C /* PassoverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PassoverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		07DF437D29B1CB10009ED75C /* myappUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappUITests.swift; sourceTree = "<group>"; };
-		07DF437F29B1CB10009ED75C /* myappUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myappUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		07DF437D29B1CB10009ED75C /* PassoverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassoverUITests.swift; sourceTree = "<group>"; };
+		07DF437F29B1CB10009ED75C /* PassoverUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassoverUITestsLaunchTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -133,9 +133,9 @@
 		07DF435529B1CB0F009ED75C = {
 			isa = PBXGroup;
 			children = (
-				07DF436029B1CB0F009ED75C /* myapp */,
-				07DF437229B1CB10009ED75C /* myappTests */,
-				07DF437C29B1CB10009ED75C /* myappUITests */,
+				07DF436029B1CB0F009ED75C /* Passover */,
+				07DF437229B1CB10009ED75C /* PassoverTests */,
+				07DF437C29B1CB10009ED75C /* PassoverUITests */,
 				07DF435F29B1CB0F009ED75C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -150,23 +150,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		07DF436029B1CB0F009ED75C /* myapp */ = {
+		07DF436029B1CB0F009ED75C /* Passover */ = {
 			isa = PBXGroup;
 			children = (
 				079F509A2E199BA600CA0D26 /* Services */,
 				078EFF992C84AAAF003312D0 /* Views */,
 				078EFF822C8350D3003312D0 /* Utils */,
 				0762C2512C2843860077A8B6 /* proto */,
-				075AE4902BDE827F003821FC /* myappRelease.entitlements */,
+				075AE4902BDE827F003821FC /* PassoverRelease.entitlements */,
 				07187D7429B305EB0087EA5E /* Info.plist */,
 				0762700A2C97378200950627 /* Passover.icns */,
 				07DF436129B1CB0F009ED75C /* PassoverApp.swift */,
 				072EFC5C2C96184800BAF61B /* AppDelegate.swift */,
 				07DF436529B1CB10009ED75C /* Assets.xcassets */,
-				07DF436A29B1CB10009ED75C /* myapp.entitlements */,
+				07DF436A29B1CB10009ED75C /* Passover.entitlements */,
 				07DF436729B1CB10009ED75C /* Preview Content */,
 			);
-			path = myapp;
+			path = Passover;
 			sourceTree = "<group>";
 		};
 		07DF436729B1CB10009ED75C /* Preview Content */ = {
@@ -177,21 +177,21 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		07DF437229B1CB10009ED75C /* myappTests */ = {
+		07DF437229B1CB10009ED75C /* PassoverTests */ = {
 			isa = PBXGroup;
 			children = (
-				07DF437329B1CB10009ED75C /* myappTests.swift */,
+				07DF437329B1CB10009ED75C /* PassoverTests.swift */,
 			);
-			path = myappTests;
+			path = PassoverTests;
 			sourceTree = "<group>";
 		};
-		07DF437C29B1CB10009ED75C /* myappUITests */ = {
+		07DF437C29B1CB10009ED75C /* PassoverUITests */ = {
 			isa = PBXGroup;
 			children = (
-				07DF437D29B1CB10009ED75C /* myappUITests.swift */,
-				07DF437F29B1CB10009ED75C /* myappUITestsLaunchTests.swift */,
+				07DF437D29B1CB10009ED75C /* PassoverUITests.swift */,
+				07DF437F29B1CB10009ED75C /* PassoverUITestsLaunchTests.swift */,
 			);
-			path = myappUITests;
+			path = PassoverUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -354,7 +354,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07DF437429B1CB10009ED75C /* myappTests.swift in Sources */,
+				07DF437429B1CB10009ED75C /* PassoverTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,8 +362,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07DF438029B1CB10009ED75C /* myappUITestsLaunchTests.swift in Sources */,
-				07DF437E29B1CB10009ED75C /* myappUITests.swift in Sources */,
+				07DF438029B1CB10009ED75C /* PassoverUITestsLaunchTests.swift in Sources */,
+				07DF437E29B1CB10009ED75C /* PassoverUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,13 +511,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = myapp/myapp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Passover/Passover.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"myapp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Passover/Preview Content\"";
 				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
@@ -533,7 +533,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = myapp/Info.plist;
+				INFOPLIST_FILE = Passover/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Passover-Debug";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allows nearby devices to find this device.";
@@ -562,13 +562,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = myapp/myappRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Passover/PassoverRelease.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"myapp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Passover/Preview Content\"";
 				DEVELOPMENT_TEAM = 37FHLU3Q9L;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
@@ -586,7 +586,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = myapp/Info.plist;
+				INFOPLIST_FILE = Passover/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Passover-Debug";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allows nearby devices to find this device.";
