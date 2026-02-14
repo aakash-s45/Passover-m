@@ -13,25 +13,13 @@ final class NetworkManager{
     private weak var pairingManager: PairingManager?
     private var isVerifiedConneciton = false
     private let networkQueue = DispatchQueue(label: "com.local.passover.network", qos: .userInitiated)
-    private let monitor = NWPathMonitor()
+    private var monitor: NWPathMonitor?
     
     var onClipboardMessage: ((ClipboardMessage) -> Void)?
     
     private init() {
 //        TODO: send heartbeat to active connection every 30 seconds
         deviceId = UserDefaults.standard.string(forKey: kDeviceId) ?? ""
-        
-        monitor.pathUpdateHandler = {[weak self] path in
-            if(path.status == .satisfied){
-                Logger.connection.info("Network satisfied, ensuring server is running")
-//                TODO: restart listener and all
-            }
-            else{
-                Logger.connection.warning("No network connection")
-                self?.close()
-            }
-            
-        }
     }
     
     func configure(pairingManager: PairingManager){
@@ -44,13 +32,16 @@ final class NetworkManager{
             listener = nil
         }
         
-        monitor.start(queue: .main)
-        
+        startMonitor()
+        startListener()
+    }
+    
+    /// Sets up and starts the NWListener with mDNS service registration.
+    private func startListener() {
         if deviceId == ""{
             Logger.connection.error("DeviceId not found in network manager!")
             return
         }
-        
         
         let options = NWProtocolWebSocket.Options()
         let paramenters = NWParameters.tcp
@@ -102,16 +93,53 @@ final class NetworkManager{
         listener?.start(queue: networkQueue)
     }
     
-    func close(){
-        for client in self.connections{
+    /// Stops the server (listener + connections) but keeps the network monitor alive.
+    private func stopServer() {
+        for client in self.connections {
             client.cancel()
         }
         connections.removeAll()
         listener?.cancel()
         listener = nil
         isVerifiedConneciton = false
-        monitor.cancel()
-        Logger.connection.info("WS Listener closed!")
+        Logger.connection.info("Server stopped (monitor still active)")
+    }
+    
+    /// Stops everything — server, connections, and the network monitor.
+    func close() {
+        stopServer()
+        monitor?.cancel()
+        monitor = nil
+        Logger.connection.info("Fully closed (monitor cancelled)")
+    }
+    
+    /// Creates a fresh NWPathMonitor and starts it.
+    private func startMonitor() {
+        guard monitor == nil else {
+            Logger.connection.debug("Monitor already running, skipping")
+            return
+        }
+        let newMonitor = NWPathMonitor()
+        newMonitor.pathUpdateHandler = { [weak self] path in
+            if path.status == .satisfied {
+                Logger.connection.info("Network restored, restarting server")
+                self?.restartServer()
+            } else {
+                Logger.connection.warning("No network connection, stopping server")
+                self?.stopServer()
+            }
+        }
+        newMonitor.start(queue: .main)
+        self.monitor = newMonitor
+    }
+    
+    /// Restarts just the server (listener + mDNS). Called when WiFi returns.
+    private func restartServer() {
+        guard listener == nil else {
+            Logger.connection.debug("Server already running, skipping restart")
+            return
+        }
+        startListener()
     }
     
     
@@ -226,6 +254,7 @@ final class NetworkManager{
     }
     
     private func removeConnection(_ connection: NWConnection){
+        Logger.connection.info("Removing connection: \(connection.endpoint.debugDescription), state: \(String(describing: connection.state))")
         connection.cancel()
         connections.removeAll { $0.endpoint == connection.endpoint }
         isVerifiedConneciton = false

@@ -37,6 +37,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        let bundleID = Bundle.main.bundleIdentifier!
+        if NSRunningApplication.runningApplications(withBundleIdentifier: bundleID).count > 1 {
+            Logger.viewCycle.warning("Another instance already running, terminating this one")
+            NSApp.terminate(nil)
+            return
+        }
+        
         Logger.viewCycle.debug("app launched: \(notification.debugDescription)")
         networkManager.onClipboardMessage = {[weak clipboardManager] message in
             clipboardManager?.addDataToClipboard(data: message)	
