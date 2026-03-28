@@ -8,6 +8,7 @@ struct Menu: View{
             Button("Preferences"){
                 openWindow(id: "preferences-window")
             }
+            Divider()
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
             }

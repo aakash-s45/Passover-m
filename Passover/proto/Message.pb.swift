@@ -30,6 +30,10 @@ struct Message: Sendable {
 
   var timestampMs: Int64 = 0
 
+  var messageID: String = String()
+
+  var originatorID: String = String()
+
   var payload: Message.OneOf_Payload? = nil
 
   var clipboard: ClipboardMessage {
@@ -128,12 +132,12 @@ struct Message: Sendable {
     set {payload = .identity(newValue)}
   }
 
-  var qrPayload: QRPayload {
+  var handshake: HandshakeMessage {
     get {
-      if case .qrPayload(let v)? = payload {return v}
-      return QRPayload()
+      if case .handshake(let v)? = payload {return v}
+      return HandshakeMessage()
     }
-    set {payload = .qrPayload(newValue)}
+    set {payload = .handshake(newValue)}
   }
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
@@ -151,7 +155,7 @@ struct Message: Sendable {
     case artwork(MediaArt)
     case heartbeat(Heartbeat)
     case identity(Identity)
-    case qrPayload(QRPayload)
+    case handshake(HandshakeMessage)
 
   }
 
@@ -165,19 +169,25 @@ struct Identity: Sendable {
 
   var deviceID: String = String()
 
+  var deviceName: String = String()
+
+  var publicKeyAgreement: Data = Data()
+
+  var publicKeySignature: Data = Data()
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
 }
 
-struct QRPayload: Sendable {
+struct HandshakeMessage: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var deviceID: String = String()
+  var sasConfirmed: Bool = false
 
-  var key: String = String()
+  var encryptedGroupKey: Data = Data()
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -432,7 +442,7 @@ struct VideoStreamChunk: Sendable {
 
 extension Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = "Message"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}timestamp_ms\0\u{1}clipboard\0\u{1}mediaControl\0\u{1}playbackInfo\0\u{1}fileHeader\0\u{1}fileChunk\0\u{1}statusRequest\0\u{1}statusResponse\0\u{1}error\0\u{1}videoChunk\0\u{1}artwork\0\u{1}heartbeat\0\u{1}identity\0\u{1}qrPayload\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}timestamp_ms\0\u{1}clipboard\0\u{1}mediaControl\0\u{1}playbackInfo\0\u{1}fileHeader\0\u{1}fileChunk\0\u{1}statusRequest\0\u{1}statusResponse\0\u{1}error\0\u{1}videoChunk\0\u{1}artwork\0\u{1}heartbeat\0\u{1}identity\0\u{1}handshake\0\u{1}messageId\0\u{1}originatorId\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -598,18 +608,20 @@ extension Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
         }
       }()
       case 14: try {
-        var v: QRPayload?
+        var v: HandshakeMessage?
         var hadOneofValue = false
         if let current = self.payload {
           hadOneofValue = true
-          if case .qrPayload(let m) = current {v = m}
+          if case .handshake(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
         if let v = v {
           if hadOneofValue {try decoder.handleConflictingOneOf()}
-          self.payload = .qrPayload(v)
+          self.payload = .handshake(v)
         }
       }()
+      case 15: try { try decoder.decodeSingularStringField(value: &self.messageID) }()
+      case 16: try { try decoder.decodeSingularStringField(value: &self.originatorID) }()
       default: break
       }
     }
@@ -672,17 +684,25 @@ extension Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
       guard case .identity(let v)? = self.payload else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 13)
     }()
-    case .qrPayload?: try {
-      guard case .qrPayload(let v)? = self.payload else { preconditionFailure() }
+    case .handshake?: try {
+      guard case .handshake(let v)? = self.payload else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 14)
     }()
     case nil: break
+    }
+    if !self.messageID.isEmpty {
+      try visitor.visitSingularStringField(value: self.messageID, fieldNumber: 15)
+    }
+    if !self.originatorID.isEmpty {
+      try visitor.visitSingularStringField(value: self.originatorID, fieldNumber: 16)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Message, rhs: Message) -> Bool {
     if lhs.timestampMs != rhs.timestampMs {return false}
+    if lhs.messageID != rhs.messageID {return false}
+    if lhs.originatorID != rhs.originatorID {return false}
     if lhs.payload != rhs.payload {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
@@ -691,7 +711,7 @@ extension Message: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBa
 
 extension Identity: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = "Identity"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}deviceId\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}deviceId\0\u{1}deviceName\0\u{1}publicKeyAgreement\0\u{1}publicKeySignature\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -700,6 +720,9 @@ extension Identity: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationB
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.deviceID) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.deviceName) }()
+      case 3: try { try decoder.decodeSingularBytesField(value: &self.publicKeyAgreement) }()
+      case 4: try { try decoder.decodeSingularBytesField(value: &self.publicKeySignature) }()
       default: break
       }
     }
@@ -708,20 +731,32 @@ extension Identity: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationB
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     if !self.deviceID.isEmpty {
       try visitor.visitSingularStringField(value: self.deviceID, fieldNumber: 1)
+    }
+    if !self.deviceName.isEmpty {
+      try visitor.visitSingularStringField(value: self.deviceName, fieldNumber: 2)
+    }
+    if !self.publicKeyAgreement.isEmpty {
+      try visitor.visitSingularBytesField(value: self.publicKeyAgreement, fieldNumber: 3)
+    }
+    if !self.publicKeySignature.isEmpty {
+      try visitor.visitSingularBytesField(value: self.publicKeySignature, fieldNumber: 4)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Identity, rhs: Identity) -> Bool {
     if lhs.deviceID != rhs.deviceID {return false}
+    if lhs.deviceName != rhs.deviceName {return false}
+    if lhs.publicKeyAgreement != rhs.publicKeyAgreement {return false}
+    if lhs.publicKeySignature != rhs.publicKeySignature {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-extension QRPayload: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = "QRPayload"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}deviceId\0\u{1}key\0")
+extension HandshakeMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = "HandshakeMessage"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sasConfirmed\0\u{1}encryptedGroupKey\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -729,26 +764,26 @@ extension QRPayload: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementation
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.deviceID) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.key) }()
+      case 1: try { try decoder.decodeSingularBoolField(value: &self.sasConfirmed) }()
+      case 2: try { try decoder.decodeSingularBytesField(value: &self.encryptedGroupKey) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.deviceID.isEmpty {
-      try visitor.visitSingularStringField(value: self.deviceID, fieldNumber: 1)
+    if self.sasConfirmed != false {
+      try visitor.visitSingularBoolField(value: self.sasConfirmed, fieldNumber: 1)
     }
-    if !self.key.isEmpty {
-      try visitor.visitSingularStringField(value: self.key, fieldNumber: 2)
+    if !self.encryptedGroupKey.isEmpty {
+      try visitor.visitSingularBytesField(value: self.encryptedGroupKey, fieldNumber: 2)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: QRPayload, rhs: QRPayload) -> Bool {
-    if lhs.deviceID != rhs.deviceID {return false}
-    if lhs.key != rhs.key {return false}
+  static func ==(lhs: HandshakeMessage, rhs: HandshakeMessage) -> Bool {
+    if lhs.sasConfirmed != rhs.sasConfirmed {return false}
+    if lhs.encryptedGroupKey != rhs.encryptedGroupKey {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

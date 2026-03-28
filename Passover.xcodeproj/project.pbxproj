@@ -20,6 +20,7 @@
 		078EFF9B2C84AAC6003312D0 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078EFF9A2C84AAC6003312D0 /* Menu.swift */; };
 		079740CE2EB1F6B4003B302D /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079740CD2EB1F6B4003B302D /* CustomTabView.swift */; };
 		079B61DA2EB1FD45002B6EB4 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079B61D92EB1FD40002B6EB4 /* PreferencesView.swift */; };
+		07ADE7CE2F5F52AE0001D76A /* PairingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ADE7CD2F5F52AE0001D76A /* PairingWindow.swift */; };
 		07DF436229B1CB0F009ED75C /* PassoverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF436129B1CB0F009ED75C /* PassoverApp.swift */; };
 		07DF436629B1CB10009ED75C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DF436529B1CB10009ED75C /* Assets.xcassets */; };
 		07DF436929B1CB10009ED75C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DF436829B1CB10009ED75C /* Preview Assets.xcassets */; };
@@ -57,6 +58,7 @@
 		078EFF9A2C84AAC6003312D0 /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
 		079740CD2EB1F6B4003B302D /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 		079B61D92EB1FD40002B6EB4 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		07ADE7CD2F5F52AE0001D76A /* PairingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingWindow.swift; sourceTree = "<group>"; };
 		07DF435E29B1CB0F009ED75C /* Passover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Passover.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DF436129B1CB0F009ED75C /* PassoverApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassoverApp.swift; sourceTree = "<group>"; };
 		07DF436529B1CB10009ED75C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 		078EFF992C84AAAF003312D0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				07ADE7CD2F5F52AE0001D76A /* PairingWindow.swift */,
 				079B61D92EB1FD40002B6EB4 /* PreferencesView.swift */,
 				079740CD2EB1F6B4003B302D /* CustomTabView.swift */,
 				078EFF9A2C84AAC6003312D0 /* Menu.swift */,
@@ -339,6 +342,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0762C2582C2844F40077A8B6 /* Message.pb.swift in Sources */,
+				07ADE7CE2F5F52AE0001D76A /* PairingWindow.swift in Sources */,
 				078EFF9B2C84AAC6003312D0 /* Menu.swift in Sources */,
 				078EFF8A2C83516D003312D0 /* Utilities.swift in Sources */,
 				079740CE2EB1F6B4003B302D /* CustomTabView.swift in Sources */,

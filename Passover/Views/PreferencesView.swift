@@ -21,28 +21,123 @@ struct PreferencesView: View {
 
 
 struct SetupView: View {
-    @EnvironmentObject var pairingmanager: PairingManager
+    @EnvironmentObject var pairingManager: PairingManager
+    
     var body: some View {
-        if pairingmanager.isKeySaved{
-            VStack{
-                Text("Key is saved!")
-                Button("Reset"){
-                    pairingmanager.forgetPermanentKey()
+        VStack(spacing: 16) {
+            // Pairing state
+            switch pairingManager.pairingState {
+            case .idle:
+                idleView
+            case .awaitingSasConfirmation:
+                sasConfirmationView
+            case .paired:
+                pairedView
+            case .error(let message):
+                errorView(message: message)
+            }
+            
+            Divider()
+            
+            // Trusted devices list
+            trustedDevicesView
+        }
+        .padding()
+    }
+    
+    private var idleView: some View {
+        VStack(spacing: 12) {
+            Text("Ready to Pair")
+                .font(.headline)
+            Text("Open the Passover app on your phone and tap 'Pair New Device'.")
+                .font(.body)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+    }
+    
+    private var sasConfirmationView: some View {
+        VStack(spacing: 16) {
+            Text("Verify Connection")
+                .font(.headline)
+            
+            Text("Confirm that '\(pairingManager.pendingPeerName)' shows the same code:")
+                .font(.body)
+                .multilineTextAlignment(.center)
+            
+            Text(pairingManager.sasCode)
+                .font(.system(size: 48, weight: .bold, design: .monospaced))
+                .foregroundColor(.blue)
+                .padding()
+            
+            HStack(spacing: 16) {
+                Button("Reject") {
+                    pairingManager.rejectSas()
                 }
+                .keyboardShortcut(.cancelAction)
+                
+                Button("Confirm") {
+                    pairingManager.confirmSas()
+                }
+                .keyboardShortcut(.defaultAction)
+                .buttonStyle(.borderedProminent)
             }
         }
-        else{
-            HStack(alignment: .top, spacing: 20){
-                VStack{
-                    pairingmanager.qrCode?.resizable().interpolation(.none).scaledToFit()
-                }
-                VStack(alignment: .leading, spacing: 20){
-                    Text("1. Make sure both devices are on the same WIFI").bold()
-                    Text("2. Scan the QR Code on your phone").bold()
-                    Text("3. Wait for the magic to happen!").bold()
+    }
+    
+    private var pairedView: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 48))
+                .foregroundColor(.green)
+            
+            Text("Device Paired Successfully!")
+                .font(.headline)
+        }
+    }
+    
+    private func errorView(message: String) -> some View {
+        VStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 48))
+                .foregroundColor(.red)
+            
+            Text(message)
+                .font(.body)
+                .foregroundColor(.red)
+                .multilineTextAlignment(.center)
+        }
+    }
+    
+    private var trustedDevicesView: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Trusted Devices")
+                .font(.headline)
+            
+            if pairingManager.trustedPeers.isEmpty {
+                Text("No paired devices yet.")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+            } else {
+                ForEach(pairingManager.trustedPeers) { peer in
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(peer.deviceName)
+                                .font(.body)
+                            Text(String(peer.deviceId.prefix(8)) + "…")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
+                        Button(role: .destructive) {
+                            pairingManager.removeTrustedPeer(deviceId: peer.deviceId)
+                        } label: {
+                            Image(systemName: "trash")
+                        }
+                    }
+                    .padding(.vertical, 4)
                 }
             }
         }
     }
 }
-

@@ -6,6 +6,7 @@
 
 import Foundation
 import AppKit
+import SwiftUI
 import OSLog
 
 
@@ -13,6 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var pairingManager: PairingManager
     var networkManager: NetworkManager
     var clipboardManager: ClipboardManager?
+    private var pairingPanel: NSPanel?
     
     override init() {
         pairingManager = PairingManager()
@@ -22,7 +24,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         clipboardManager = ClipboardManager()
         
         super.init()
-        Logger.viewCycle.debug("init app delegate"	)
+        
+        pairingManager.onPairingRequest = { [weak self] in
+            self?.showPairingPanel()
+        }
+        
+        Logger.viewCycle.debug("init app delegate")
     }
     
     func applicationWillFinishLaunching(_ notification: Notification){
@@ -45,7 +52,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         Logger.viewCycle.debug("app launched: \(notification.debugDescription)")
         networkManager.onClipboardMessage = {[weak clipboardManager] message in
-            clipboardManager?.addDataToClipboard(data: message)	
+            clipboardManager?.addDataToClipboard(data: message)
         }
         
         clipboardManager?.onClipboardUpdate = {[weak networkManager] data in
@@ -70,7 +77,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
 
     @objc func willSleep() {
-//         1. Send "Status: Sleeping" message to Android
         clipboardManager = nil
         networkManager.close()
         Logger.viewCycle.debug("will sleep")
@@ -89,5 +95,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         Logger.viewCycle.debug("did wake")
     }
-
+    
+    private func showPairingPanel() {
+        if let existing = pairingPanel, existing.isVisible {
+            existing.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+        
+        let view = PairingWindow().environmentObject(pairingManager)
+        let controller = NSHostingController(rootView: view)
+        let panel = NSPanel(
+            contentRect: NSRect(x: 0, y: 0, width: 400, height: 320),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        panel.contentViewController = controller
+        panel.title = "Pairing Request"
+        panel.center()
+        panel.isReleasedWhenClosed = false
+        panel.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        pairingPanel = panel
+    }
 }

@@ -25,18 +25,3 @@ struct PassoverApp: App {
         }
     }
 }
-
-
-/*
- ISSUES:
- 
- - fix connection verifty logic
- - fix reset button, need to clear state better
- 
- 
- android:
- - add reset button
- - clean things on reset button
- 
- 
- */

@@ -9,16 +9,14 @@ final class NetworkManager{
     private var kDeviceId = "passover.deviceId"
     private var listener: NWListener?
     private var connections: [NWConnection] = []
-    private var symmetricKey:SymmetricKey?
+    private var groupKey: SymmetricKey?
     private weak var pairingManager: PairingManager?
-    private var isVerifiedConneciton = false
     private let networkQueue = DispatchQueue(label: "com.local.passover.network", qos: .userInitiated)
     private var monitor: NWPathMonitor?
     
     var onClipboardMessage: ((ClipboardMessage) -> Void)?
     
     private init() {
-//        TODO: send heartbeat to active connection every 30 seconds
         deviceId = UserDefaults.standard.string(forKey: kDeviceId) ?? ""
     }
     
@@ -26,10 +24,20 @@ final class NetworkManager{
         self.pairingManager = pairingManager
     }
     
+    func reloadGroupKey() {
+        if KeyStore.hasGroupKey() {
+            groupKey = KeyStore.getOrCreateGroupKey()
+        }
+    }
+    
     func start(){
         if listener != nil {
             listener?.cancel()
             listener = nil
+        }
+        
+        if KeyStore.hasGroupKey() {
+            groupKey = KeyStore.getOrCreateGroupKey()
         }
         
         startMonitor()
@@ -101,7 +109,6 @@ final class NetworkManager{
         connections.removeAll()
         listener?.cancel()
         listener = nil
-        isVerifiedConneciton = false
         Logger.connection.info("Server stopped (monitor still active)")
     }
     
@@ -169,11 +176,6 @@ final class NetworkManager{
                 return
             }
             
-            guard let pairingManager = self.pairingManager else {
-                Logger.connection.error("Pairing manager is nil")
-                return
-            }
-            
             if let metadata = context?.protocolMetadata(definition: NWProtocolWebSocket.definition) as? NWProtocolWebSocket.Metadata{
                 if metadata.opcode == .close{
                     Logger.connection.info("Received Close Frame. Closing connection.")
@@ -182,28 +184,57 @@ final class NetworkManager{
                 }
             }
             
-            let keyToTry = pairingManager.isKeySaved ? loadEcryptionKey() : pairingManager.currentEncryptionKey
-            
-            guard let key = keyToTry else {
-                Logger.connection.error("Failed to get key to decrypt data")
+            guard let data = content, !data.isEmpty else {
+                if connection.state == .ready {
+                    self.receive(on: connection)
+                }
                 return
             }
-                        
-            if let data = content, !data.isEmpty {
-                do{
+            
+            // Trusted peers: decrypt with group key
+            if let key = self.groupKey {
+                do {
                     let decryptedData = try KeyStore.decrypt(data, using: key)
                     let message = try Message(serializedBytes: decryptedData)
+                    self.onReceive(message, from: connection)
                     
-                    if !verifyConnection(data: message){
-                        removeConnection(connection)
-                        return
+                    if connection.state == .ready {
+                        self.receive(on: connection)
                     }
-                    
-                    onReceive(message, from: connection)
-                }catch{
-                    Logger.connection.error("Removing connection, Failed to decrypt data due to \(error)")
-                    removeConnection(connection)
+                    return
+                } catch {
+                    Logger.connection.debug("GroupKey decrypt failed, trying as pairing message")
                 }
+            }
+            
+            // Pairing: plain protobuf (Identity or Handshake)
+            do {
+                let message = try Message(serializedBytes: data)
+                if case .identity(let identity) = message.payload {
+                    Logger.connection.info("Received pairing Identity from \(identity.deviceName)")
+                    
+                    if let pairingManager = self.pairingManager {
+                        let ourIdentity = pairingManager.buildIdentityMessage()
+                        if let serialized = try? ourIdentity.serializedData() {
+                            let meta = NWProtocolWebSocket.Metadata(opcode: .binary)
+                            let ctx = NWConnection.ContentContext(identifier: "identity-reply", metadata: [meta])
+                            connection.send(content: serialized, contentContext: ctx, isComplete: true, completion: .contentProcessed { err in
+                                if let err = err {
+                                    Logger.connection.error("Failed to send identity: \(err)")
+                                }
+                            })
+                        }
+                        
+                        pairingManager.handleIncomingIdentity(identity, connection: connection)
+                    }
+                } else if case .handshake(let handshake) = message.payload {
+                    if let pairingManager = self.pairingManager {
+                        pairingManager.handleIncomingHandshake(handshake)
+                        self.groupKey = KeyStore.getOrCreateGroupKey()
+                    }
+                }
+            } catch {
+                Logger.connection.warning("Failed to parse message as pairing data: \(error)")
             }
             
             if connection.state == .ready {
@@ -212,64 +243,10 @@ final class NetworkManager{
         }
     }
     
-    private func verifyConnection(data: Message) -> Bool{
-        if isVerifiedConneciton{
-            return true
-        }
-        guard let pairingManager = self.pairingManager else {
-            Logger.connection.error("Pairing manager is nil")
-            return false
-        }
-        
-        guard case .identity(let identity) = data.payload else{
-            Logger.connection.error("First message should be identity message only!")
-            return false
-        }
-        
-        if identity.deviceID != self.deviceId{
-            return false
-        }
-        
-        if !pairingManager.isKeySaved{
-            self.symmetricKey = pairingManager.currentEncryptionKey
-        }
-        
-        let identityPayload = Message.with{
-            $0.timestampMs = Int64(Date().timeIntervalSince1970 * 1000)
-            $0.identity = Identity.with{
-                $0.deviceID = deviceId
-            }
-        }
-        sendMessage(identityPayload)
-        if !pairingManager.isKeySaved{
-            pairingManager.saveEncryptionKey()
-            Logger.connection.info("First message received, device is paired!")
-        }
-        else{
-            Logger.connection.info("Device Verified!")
-        }
-        isVerifiedConneciton = true
-//       TODO: make a 3 way handshake process to save the key
-        return true
-    }
-    
     private func removeConnection(_ connection: NWConnection){
         Logger.connection.info("Removing connection: \(connection.endpoint.debugDescription), state: \(String(describing: connection.state))")
         connection.cancel()
         connections.removeAll { $0.endpoint == connection.endpoint }
-        isVerifiedConneciton = false
-    }
-    
-    private func loadEcryptionKey()->SymmetricKey?{
-        if symmetricKey != nil { return symmetricKey}
-        do{
-            symmetricKey = try KeyStore.getKey(deviceID: deviceId)
-            return symmetricKey
-        }catch{
-            Logger.connection.error("Failed to fetch symmetric key, can't start the server!, error: \(error)")
-            self.close()
-            return nil
-        }
     }
     
     private func onReceive(_ message: Message, from connection: NWConnection){
@@ -308,9 +285,9 @@ final class NetworkManager{
 
             case .heartbeat(let hb):
                 print("Heartbeat:", hb)
-            
-            case .qrPayload(let qrp):
-                print("QR Payload:", qrp)
+
+            case .handshake(let hs):
+                Logger.connection.info("Received handshake message")
 
             case .identity(let id):
                 Logger.connection.info("Received Identity: \(id.deviceID)")
@@ -326,8 +303,8 @@ final class NetworkManager{
             return
         }
         
-        guard let key = loadEcryptionKey() else {
-            Logger.connection.error("Encryption key not found!")
+        guard let key = groupKey else {
+            Logger.connection.error("No group key available for encryption!")
             return
         }
         do{
