@@ -70,7 +70,7 @@ struct PairingWindow: View {
                 .fontWeight(.bold)
             
             Button("Done") {
-                pairingManager.pairingState = .idle
+                pairingManager.resetPairingState()
                 dismiss()
             }
         }
@@ -86,7 +86,7 @@ struct PairingWindow: View {
                 .multilineTextAlignment(.center)
             
             Button("Dismiss") {
-                pairingManager.pairingState = .idle
+                pairingManager.resetPairingState()
                 dismiss()
             }
         }
